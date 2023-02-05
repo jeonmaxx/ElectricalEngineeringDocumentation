@@ -1,13 +1,9 @@
 # Electrical Engineering Toolbox Documentation
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+## Einleitung
 
-## Commands
-
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+Dies hier ist eine Dokumentation, die die Benutzung der Elektrotechnik Toolbox erklaeren und vereinfachen soll.
+Momentan beinhaltet die Toolbox Skripte fuer einen Widerstandsfarbcodekonverter und fuer einen Leiterbahnbreitenkalkulator.
 
 ## Project layout
 

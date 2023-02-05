@@ -2,3 +2,5 @@ site_name: Electrical Engineering Toolbox
 site_url: https://github.com/jeonmaxx/ElectricalEngineeringDocumentation
 nav: 
 - Home: index.md
+- Widerstand: resistance.md
+- Leiterbahnbreiten: traceWidths.md
