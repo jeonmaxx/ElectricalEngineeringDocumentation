@@ -4,3 +4,6 @@ nav:
 - Home: index.md
 - Widerstand: resistance.md
 - Leiterbahnbreiten: traceWidths.md
+theme:
+    name: mkdocs
+    locale: de

@@ -1,10 +1,9 @@
-# Kalkulator fuer Leiterbahnbreiten
+# Leiterbahnbreiten
 
 ## Einleitung
 
 In diesem Teil wird die Benutzung, der Leiterbahnbreiten Tools erklaert.
 
-## Klassen
-### UnitTree
+## UnitTree
 
-### MasterUnit
+## MasterUnit
