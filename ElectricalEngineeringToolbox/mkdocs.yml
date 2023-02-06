@@ -1,5 +1,5 @@
 site_name: Electrical Engineering Toolbox
-site_url: https://github.com/jeonmaxx/ElectricalEngineeringDocumentation
+site_url: https://jeonmaxx.github.io/ElectricalEngineeringDocumentation
 nav: 
 - Home: index.md
 - Widerstand: resistance.md
