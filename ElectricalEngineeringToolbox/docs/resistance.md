@@ -7,7 +7,7 @@ In diesem Teil wird die Benutzung, der Widerstand Tools erklaert.
 ## Resistor
 Zuerst gibt es einen Enum, fuer die einzelnen Farben der Ringe, welchen man erweitern koennte, falls noch Farben dazu kommen sollten.
 ```c#
-public enum ResistorRing
+    public enum ResistorRing
     {
         Black = 0, Brown = 1, Red = 2, Orange = 3, Yellow = 4,
         Green = 5, Blue = 6, Purple = 7, Gray = 8, White = 9,
@@ -16,7 +16,7 @@ public enum ResistorRing
 ```
 Um den Farbcode von Farben zu Wert zu konvertieren, gibt es momentan zwei Konstruktoren. Einmal fuer Vier Ringe und natuerlich auch fuer Fuenf Ringe. Als Beispiel wird der fuer Vier Ringe gezeigt:
 ```c#
-public Resistor(ResistorRing ring1, ResistorRing ring2, ResistorRing factor, ResistorRing tolerance)
+        public Resistor(ResistorRing ring1, ResistorRing ring2, ResistorRing factor, ResistorRing tolerance)
         {
             InvalidNumber(ring1);
             InvalidNumber(ring2);
@@ -29,11 +29,11 @@ public Resistor(ResistorRing ring1, ResistorRing ring2, ResistorRing factor, Res
             UpdateValueFromColors();
         }
 ```
-
+Zuerst wird geprueft, ob die Farben, die man eingetragen hat, auch angenommen werden koennen.  
 
 Natuerlich gibt es auch einen Konstruktor, wenn man von einem Wert zu Farben konvertieren will:
 ```c#
-public Resistor(int value, Tolerance tolerance, RingCount ringCount)
+        public Resistor(int value, Tolerance tolerance, RingCount ringCount)
         {
             _ringCount = ringCount;
             _tolerance = tolerance;
@@ -76,7 +76,24 @@ public Resistor(int value, Tolerance tolerance, RingCount ringCount)
             UpdateValueFromColors();
         }
 ```
+Erklaere hier die Funktion  
+
+Und zu guter letzt gibt es noch die "UpdateValueFromColors" Funktion, welche in allen Konstruktoren fuer die Umrechnung benutzt wird:
+```c#
+        private void UpdateValueFromColors()
+        {
+            int tmp = _ringCount switch
+            {
+                RingCount.Four => (int) (_ring2 + 10 * (int) _ring1),
+                RingCount.Five => (int) (_ring3 + 10 * (int) _ring2 + 100 * (int) _ring1),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+            _value = (long) (tmp * _factor.Value);
+        }
+```
 
 ## Factor
 
 ## Tolerance
+
+## Testing
