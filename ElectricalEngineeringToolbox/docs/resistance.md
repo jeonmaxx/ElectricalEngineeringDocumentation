@@ -3,6 +3,10 @@
 ## Einleitung
 
 In diesem Teil wird die Benutzung, der Widerstand Tools erklaert.
+Es gibt fuer die Widerstand Tools momentan Drei Klassen. 
+Einmal die **Resistor** Klasse, die hauptsaechlich die Werte verwaltet. 
+Dann die **Factor** Klasse, welche den Factorring bearbeitet. 
+Und die **Tolerance** Klasse, die den Toleranzring bearbeitet.
 
 ## Resistor
 Zuerst gibt es einen Enum, fuer die einzelnen Farben der Ringe, welchen man erweitern koennte, falls noch Farben dazu kommen sollten.
@@ -14,7 +18,8 @@ Zuerst gibt es einen Enum, fuer die einzelnen Farben der Ringe, welchen man erwe
         Gold = 10, Silver = 11, Pink = 12
     }
 ```
-Um den Farbcode von Farben zu Wert zu konvertieren, gibt es momentan zwei Konstruktoren. Einmal fuer Vier Ringe und natuerlich auch fuer Fuenf Ringe. Als Beispiel wird der fuer Vier Ringe gezeigt:
+Um den Farbcode von **Farben zu Wert** zu konvertieren, gibt es momentan zwei Konstruktoren. Einmal fuer Vier Ringe und natuerlich auch fuer Fuenf Ringe. 
+Als Beispiel wird der fuer Vier Ringe gezeigt:
 ```c#
         public Resistor(ResistorRing ring1, ResistorRing ring2, ResistorRing factor, ResistorRing tolerance)
         {
@@ -29,9 +34,13 @@ Um den Farbcode von Farben zu Wert zu konvertieren, gibt es momentan zwei Konstr
             UpdateValueFromColors();
         }
 ```
-Zuerst wird geprueft, ob die Farben, die man eingetragen hat, auch angenommen werden koennen.  
+Bei dieser Funktion muss man angeben, welche Farben die ersten beiden Ringe, der Faktorring und der Toleranzring hat.
+Zuerst wird geprueft, ob die Farben, die man eingetragen hat, auch angenommen werden koennen. 
+Der Factorring wird an die Faktor Klasse und der Toleranzring an die Toleranz Klasse uebergeben.
+Dann sagt die Funktion, dass hier nur Vier Ringe verwendet werden (Beim anderen Konstruktor sagt er an der Stelle Fuenf Ringe) 
+und zum Schluss wird zum finalen berechnen noch die Funktion "UpdateValueFromColors" verwendet.  
 
-Natuerlich gibt es auch einen Konstruktor, wenn man von einem Wert zu Farben konvertieren will:
+Natuerlich gibt es auch einen Konstruktor, wenn man von einem **Wert zu Farben** konvertieren will:
 ```c#
         public Resistor(int value, Tolerance tolerance, RingCount ringCount)
         {
@@ -76,9 +85,15 @@ Natuerlich gibt es auch einen Konstruktor, wenn man von einem Wert zu Farben kon
             UpdateValueFromColors();
         }
 ```
-Erklaere hier die Funktion  
+Hierbei muss man angeben, welchen Wert man braucht, welche Toleranz man haben moechte und wie viele Ringe der Widerstandsfarbcode haben soll.
+Dann gibt es einen Switch fuer beide Faelle der Ringanzahl, also sowohl fuer Vier, als auch fuer Fuenf Ringe. 
+Dabei wird der Wert dann gekuerzt, da nur die ersten beiden, beziehungsweise Drei Zahlen wichtig fuer die Umrechnung sind.
+Dabei wird der cFaktor bei jedem kuerzen erhoeht, damit das Program bestimmen kann, welche Faktorfarbe benoetigt wird.
+Dann berechnet er die einzelnen Ziffern, der relevanten Zahl, mit der Hilfe von geteilt und Modulo.
+So kann er also bestimmen, welche Farbe sowohl der erste, als auch der zweite und ggf. dritte Ring benoetigt.
+Der Faktor wird dann mit Hilfe der Faktor Klasse und cFaktor berechnet und die Toleranz musste man hier selbst bestimmen.
 
-Und zu guter letzt gibt es noch die "UpdateValueFromColors" Funktion, welche in allen Konstruktoren fuer die Umrechnung benutzt wird:
+Und zu guter Letzt gibt es noch die "UpdateValueFromColors" Funktion, welche in allen Konstruktoren fuer die Umrechnung benutzt wird:
 ```c#
         private void UpdateValueFromColors()
         {
@@ -91,9 +106,177 @@ Und zu guter letzt gibt es noch die "UpdateValueFromColors" Funktion, welche in 
             _value = (long) (tmp * _factor.Value);
         }
 ```
+Auch hier gibt es wieder eine Moeglichkeit, den Wert fuer Vier, als auch fuer Fuenf Ringe auszurechnen. 
+Der Wert, der dabei raus kommt wird dann noch mit dem Wert des Faktors multipliziert und schon hat man den benoetigten Wert.
 
 ## Factor
+Die Faktor Klasse hat nur Drei Hauptteile, die relativ simpel und einfach zu erklaeren sind.
+Hier werden zuerst die einzelnen Faktoren aufgelistet, welche auch hier erweiterbar waeren, falls noch welche dazu kommen sollten.
+```c#
+        public static Factor One = new Factor(1);
+        public static Factor Ten = new Factor(10);
+        public static Factor Hundred = new Factor(100);
+        public static Factor Thousand = new Factor(1_000);
+        public static Factor TenThousand = new Factor(10_000);
+        public static Factor HundredThousand = new Factor(100_000);
+        public static Factor Million = new Factor(1_000_000);
+        public static Factor TenMillion = new Factor(10_000_000);
+        public static Factor HundredMillion = new Factor(100_000_000);
+        public static Factor Billion = new Factor(1_000_000_000);
+
+        public ResistorRing Color { get; }
+        public double Value { get; }
+```
+Wenn man von **Farbe zu Wert** rechnen moechte, dann kann man das ganz einfach mit dieser Funktion machen, indem man ihr die gewuenschte Farbe uebergibt. 
+In dem Switch wird festgelegt welche Farbe welchen Faktor bekommt und dieser Faktorwert wird dann zuruekgegeben.
+```c#
+        public Factor(ResistorRing color)
+        {
+            Color = color;
+
+            Value = color switch
+            {
+                ResistorRing.Black => 1,
+                ResistorRing.Brown => 10,
+                ResistorRing.Red => 100,
+                ResistorRing.Orange => 1_000,
+                ResistorRing.Yellow => 10_000,
+                ResistorRing.Green => 100_000,
+                ResistorRing.Blue => 1_000_000,
+                ResistorRing.Purple => 10_000_000,
+                ResistorRing.Gray => 100_000_000,
+                ResistorRing.White => 1_000_000_000,
+                ResistorRing.Gold => 0.1,
+                ResistorRing.Silver => 0.01,
+                ResistorRing.Pink => 0.001,
+                _ => throw new ArgumentOutOfRangeException(nameof(color), color, null)
+            };
+        }
+```
+
+Hiermit kann man von **Wert zu Farbe** rechnen, indem man den Wert uebergibt. 
+Auch hier wird ein Switch benutzt, um den gewuenschten Wert in die dazugehoerige Farbe umzuwandeln.
+```c#
+        public Factor(double value)
+        {
+            Value = value;
+            Color = value switch
+            {
+                1 => ResistorRing.Black,
+                10 => ResistorRing.Brown,
+                100 => ResistorRing.Red,
+                1_000 => ResistorRing.Orange,
+                10_000 => ResistorRing.Yellow,
+                100_000 => ResistorRing.Green,
+                1_000_000 => ResistorRing.Blue,
+                10_000_000 => ResistorRing.Purple,
+                100_000_000 => ResistorRing.Gray,
+                1_000_000_000 => ResistorRing.White,
+                0.1 => ResistorRing.Gold,
+                0.01 => ResistorRing.Silver,
+                0.001 => ResistorRing.Pink,
+                _ => throw new OutOfSpecException()
+            };
+        }
+```
+
 
 ## Tolerance
+Hier muss noch die Toleranz Klasse beschrieben werden
+
+```c#
+        public enum RoundMode { ToLower, ToUpper, Nearest }
+
+        public static Tolerance One => new Tolerance(ResistorRing.Brown);
+        public static Tolerance Two => new Tolerance(ResistorRing.Red);
+        public static Tolerance Half => new Tolerance(ResistorRing.Green);
+        public static Tolerance Quarter => new Tolerance(ResistorRing.Blue);
+        public static Tolerance Tenth => new Tolerance(ResistorRing.Purple);
+        public static Tolerance Twentieth => new Tolerance(ResistorRing.Gray);
+        public static Tolerance Five => new Tolerance(ResistorRing.Gold);
+        public static Tolerance Ten => new Tolerance(ResistorRing.Silver);
+
+        public ResistorRing Color { get; private set; }
+        public double Value { get; }
+```
+
+```c#
+        public Tolerance(ResistorRing ring)
+        {
+            Color = ring;
+            Value = ring switch
+            {
+                ResistorRing.Black => throw new OutOfSpecException(),
+                ResistorRing.Brown => 1,
+                ResistorRing.Red => 2,
+                ResistorRing.Orange => 0.05,
+                ResistorRing.Yellow => 0.02,
+                ResistorRing.Green => 0.5,
+                ResistorRing.Blue => 0.25,
+                ResistorRing.Purple => 0.1,
+                ResistorRing.Gray => 0.01,
+                ResistorRing.White => throw new OutOfSpecException(),
+                ResistorRing.Gold => 5,
+                ResistorRing.Silver => 10,
+                ResistorRing.Pink => throw new OutOfSpecException(),
+                _ => throw new ArgumentOutOfRangeException(nameof(ring), ring, null)
+            };
+        }
+```
+
+```c#
+        public Tolerance(double value, RoundMode mode = RoundMode.ToLower)
+        {
+            double[] allowedValues = { 1, 2, 0.5, 0.25, 0.1, 0.01, 5, 10, 0.02, 0.05 };
+            value = Math.Abs(value);
+
+            switch (mode)
+            {
+                case RoundMode.ToLower:
+                    double lowTargetValue = allowedValues.OrderByDescending(v => v)
+                        .SkipWhile(v => v > value)
+                        .FirstOrDefault();
+                    Value = lowTargetValue == 0 ? allowedValues.Min() : lowTargetValue;
+                    break;
+
+                case RoundMode.ToUpper:
+                    double highTargetValue = allowedValues.OrderBy(v => v)
+                        .SkipWhile(v => v < value)
+                        .FirstOrDefault();
+                    Value = highTargetValue == 0 ? allowedValues.Max() : highTargetValue;
+                    break;
+
+                case RoundMode.Nearest:
+                    Value = allowedValues.Aggregate((x, y) => Math.Abs(x - value) < Math.Abs(y - value) ? x : y);
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
+            }
+
+            CalculateColorFromValue();
+        }
+```
+```c#
+        private void CalculateColorFromValue()
+        {
+            Color = Value switch
+            {
+                1 => ResistorRing.Brown,
+                2 => ResistorRing.Red,
+                0.5 => ResistorRing.Green,
+                0.25 => ResistorRing.Blue,
+                0.1 => ResistorRing.Purple,
+                0.01 => ResistorRing.Gray,
+                5 => ResistorRing.Gold,
+                10 => ResistorRing.Silver,
+                0.02 => ResistorRing.Yellow,
+                0.05 => ResistorRing.Orange,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+        }
+```
+
 
 ## Testing
+Kleinere Erklaerung, wie wir die Klassen und Methoden getestet haben.
