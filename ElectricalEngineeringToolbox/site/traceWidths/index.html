@@ -84,11 +84,15 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-level="2"><a href="#masterunit" class="nav-link">MasterUnit</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-level="2"><a href="#unittree" class="nav-link">UnitTree</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#masterunit" class="nav-link">MasterUnit</a>
+            <li class="nav-item" data-level="2"><a href="#calculator" class="nav-link">Calculator</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -106,8 +110,210 @@
 <h1 id="leiterbahnbreiten">Leiterbahnbreiten</h1>
 <h2 id="einleitung">Einleitung</h2>
 <p>In diesem Teil wird die Benutzung, der Leiterbahnbreiten Tools erklaert.</p>
-<h2 id="unittree">UnitTree</h2>
 <h2 id="masterunit">MasterUnit</h2>
+<pre><code class="language-c#">        public abstract class MasterUnit
+        {
+            public string CurrentUnit;
+            public double value;
+        }
+</code></pre>
+<h2 id="unittree">UnitTree</h2>
+<pre><code class="language-c#">        public enum SIPrefix
+        {
+            Quetta = 30,
+            Ronna = 27,
+            Yotta = 24,
+            Zetta = 21,
+            Exa = 18,
+            Peta = 15,
+            Tera = 12,
+            Giga = 9,
+            Mega = 6,
+            Kilo = 3,
+            Hekto = 2,
+            Deka = 1,
+            SIDefault = 0,
+            Dezi = -1,
+            Zenti = -2,
+            Milli = -3,
+            Mikro = -6,
+            Nani = -9,
+            Piko = -12,
+            Femot = -15,
+            Atto = -18,
+            Zepto = -21,
+            Yokto = -24,
+            Ronto = -27,
+            Quekto = -30
+        }
+</code></pre>
+<pre><code class="language-c#">        public UnitTree()
+        {
+            _functional = true;
+        }
+
+        private class Node
+        {
+            public readonly string Unit;
+            public readonly Node? ParentUnit;
+
+            public Node(string unit, Node? parentUnit)
+            {
+                Unit = unit;
+                ParentUnit = parentUnit;
+            }
+
+            public override string ToString()
+            {
+                return Unit;
+            }
+
+            public bool HasUnit(string unit)
+            {
+                return unit == Unit;
+            }
+        }
+</code></pre>
+<pre><code class="language-c#">        public double ConvertSIPrefixValue(string startUnit, SIPrefix startPrefix, string targetUnit,
+            SIPrefix targetPrefix, double value)
+        {
+            return ConvertValue(startUnit, targetUnit, value * Math.Pow(10.0, (double) startPrefix)) *
+                   Math.Pow(10.0, (double) targetPrefix);
+        }
+        public double ConvertValue(string startUnit, string targetUnit, double value)
+        {
+            IsFunctional();
+            if (startUnit.Equals(targetUnit))
+            {
+                return value;
+            }
+            if (_conversion.ContainsKey((startUnit,targetUnit)))
+            {
+                return _conversion[(startUnit, targetUnit)].Invoke(value);
+            }
+
+            Stack&lt;ConversionFunction&gt; functionStack = CreateConversionStack(startUnit, targetUnit);
+
+            while (functionStack.Count &gt; 0)
+            {
+                value = functionStack.Pop().Invoke(value);
+                Console.WriteLine(value);
+            }
+
+            return value;
+        }
+</code></pre>
+<pre><code class="language-c#">        Stack&lt;ConversionFunction&gt; CreateConversionStack(string startUnit, string targetUnit)
+        {
+            Queue&lt;Node&gt; openQueue = new Queue&lt;Node&gt;();
+            List&lt;Node&gt; closedList = new List&lt;Node&gt;();
+            HashSet&lt;string&gt; processedUnits = new HashSet&lt;string&gt;();
+
+            openQueue.Enqueue(new Node(startUnit, null));
+            processedUnits.Add(startUnit);
+
+            while (!_conversion.ContainsKey((openQueue.Peek().Unit, targetUnit)))
+            {
+                Node currentItem = openQueue.Dequeue();
+                closedList.Add(currentItem);
+                foreach (var y in _conversion.Keys.Where(x =&gt; x.from == currentItem.ToString()))
+                {
+                    if (!processedUnits.Contains(y.to))
+                    {
+                        openQueue.Enqueue(new Node(y.to, currentItem));
+                        processedUnits.Add(y.to);
+                    }
+                }
+            }
+
+            closedList.Add(openQueue.Peek());
+            Stack&lt;ConversionFunction&gt; functionStack = new Stack&lt;ConversionFunction&gt;();
+            Node currentNode = new Node(targetUnit, openQueue.Peek());
+
+            while (currentNode.ParentUnit != null)
+            {
+                Console.WriteLine(currentNode.Unit);
+                functionStack.Push(_conversion[(currentNode.ParentUnit.Unit, currentNode.Unit)]);
+                currentNode = currentNode.ParentUnit;
+            }
+
+            return functionStack;
+        }
+</code></pre>
+<pre><code class="language-c#">        public void AddPath(string startUnit, string targetUnit, ConversionFunction conversionFunc)
+        {
+            _functional = false;
+            _conversion.TryAdd((startUnit,targetUnit), conversionFunc);
+        }
+
+        private void checkFunctionality()
+        {
+        }
+
+        public bool IsFunctional()
+        {
+            if (!_functional)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(&quot;!!!Using not functional UnitTree!!!&quot;);
+                Console.ResetColor();
+            }
+            return _functional;
+        }
+</code></pre>
+<h2 id="calculator">Calculator</h2>
+<pre><code class="language-c#">        public Calculator() { }
+
+        public double CalculateAreaIntern(double ampere, double tRise)
+        {
+            double I = ampere;
+            double TRise = tRise;
+            double constantK = 0.024;
+            double constantB = 0.44;
+            double constantC = 0.725;
+            double area;
+
+            area = Math.Pow(I / (constantK * Math.Pow(TRise, constantB)), (1 / constantC));
+
+            return area;
+        }
+</code></pre>
+<pre><code class="language-c#">        public double CalculateAreaExtern(double ampere, double tRise)
+        {
+            double I = ampere;
+            double TRise = tRise;
+            double constantK = 0.048;
+            double constantB = 0.44;
+            double constantC = 0.725;
+            double area;
+
+            area = Math.Pow(I / (constantK * Math.Pow(TRise, constantB)), (1 / constantC));
+
+            return area;
+        }
+</code></pre>
+<pre><code class="language-c#">        public double CalculateWidthMil(double area, double thickness)
+        {
+            double A = area;
+            double t = thickness;
+            double width;
+
+            width = A / t;
+
+            return width;
+        }
+</code></pre>
+<pre><code class="language-c#">        public double CalculateWidthOzFt(double area, double thickness)
+        {
+            double A = area;
+            double t = thickness;
+            double width;
+
+            width = A / (t * 1.378);
+
+            return width;
+        }
+</code></pre>
 <h2 id="testing">Testing</h2></div>
             </div>
         </div>
