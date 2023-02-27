@@ -275,7 +275,8 @@ Auch hier wird ein Switch benutzt, um den gewuenschten Wert in die dazugehoerige
         }
 </code></pre>
 <h2 id="tolerance">Tolerance</h2>
-<p>Hier muss noch die Toleranz Klasse beschrieben werden</p>
+<p>Auch hier gibt es wieder einen Enum. Dieser verfuegt ueber die Drei verschiedenen Rundungs-Modi: Abrunden, Aufrunden und zum naechsten runden. 
+Danach werden den verschiedenen Toleran Moeglichkeiten noch ihre jeweilige Ringfarbe zugeteilt.</p>
 <pre><code class="language-c#">        public enum RoundMode { ToLower, ToUpper, Nearest }
 
         public static Tolerance One =&gt; new Tolerance(ResistorRing.Brown);
@@ -290,6 +291,8 @@ Auch hier wird ein Switch benutzt, um den gewuenschten Wert in die dazugehoerige
         public ResistorRing Color { get; private set; }
         public double Value { get; }
 </code></pre>
+<p>Dieser Konstruktor ist dafuer zustaendig, dass wenn man eine Farbe angibt, man den passenden Toleranzwert ausgegeben bekommt. 
+Falls man eine Farbe angeben sollte, fuer welche es keinen Wert geben sollte, dann wird eine Exception getriggert, damit daraus keine Fehler entstehen koennen.</p>
 <pre><code class="language-c#">        public Tolerance(ResistorRing ring)
         {
             Color = ring;
@@ -312,6 +315,8 @@ Auch hier wird ein Switch benutzt, um den gewuenschten Wert in die dazugehoerige
             };
         }
 </code></pre>
+<p>Dieser Konstruktor ist fuer das Kovertieren von Wert zu Farbe zustaending. 
+Zudem muss man auch den Rundungsmodus auswaehlen, damit einer der moeglichen Farben bei der Rechnung als Ergebnis herauskommen kann. Default ist dabei das Abrunden.</p>
 <pre><code class="language-c#">        public Tolerance(double value, RoundMode mode = RoundMode.ToLower)
         {
             double[] allowedValues = { 1, 2, 0.5, 0.25, 0.1, 0.01, 5, 10, 0.02, 0.05 };
@@ -344,6 +349,22 @@ Auch hier wird ein Switch benutzt, um den gewuenschten Wert in die dazugehoerige
             CalculateColorFromValue();
         }
 </code></pre>
+<p>Zunaechst gibt es ein Array, wo alle erlaubten Ergebnisse eingetragen sind. Dieses ist fuer die folgenden Rechungen nuetzlich.<br />
+Als naechstes folgt ein Switch fuer die verschiedenen Rundungs Modi. 
+Beim <strong>Abrunden</strong> werden die erlaubten Zahlen zuerst vom Groessten zum Kleinsten sortiert. 
+Allerdings werden dabei nur die Werte beachtet, die kleiner als der angebene Wert sind. 
+Danach wird der erste von diesen Werten (also der groesste Wert, von denen die kleiner als der angebene sind) zu dem Wert von lowTargetValue. 
+Wenn alle erlaubten Werte groesser als der angebene Wert sind, dann wird lowTargetValue zu 0. 
+Wenn lowTargetValue 0 ist, wird der kleinste Wert aus dem erlaubten Werte Array genommen, ansonsten bleibt es beim Wert von lowTargetValue.<br />
+Beim <strong>Aufrunden</strong> ist es so aehnlich, nur dass vom Kleinsten bis zum Groessten sortiert wird. 
+Die Werte, welche kleiner als der angebene Wert sind werden dabei uebersprungen und dann wird der kleinste Wert von denen, die groesser als der angegebene Wert highTargetValue zugewiesen. 
+Wenn dieser Wert auch hier 0 sein sollte, wird highTargetValue zum groessten Wert von den erlaubten Werten.<br />
+Beim <strong>Runden zum Naechsten</strong> wird Aggregate benutzt um herauszufinden, welcher Wert am naechsten an dem angegebenen ist. 
+Dabei wird geprueft ob der x Wert minus dem angebenen Wert kleiner als der y Wert minus dem angegebenen Wert ist. 
+Wenn ja, dann bleibt der x Wert beim naechsten Durchlauf x und wenn nicht, dann wird der y Wert zum neuen x Wert. 
+Das geht solange, bis alle Werte vom Array durchgelaufen sind. 
+Der letzte x Wert bleibt dann der Wert von Value und ist somit der naechste Wert an dem angegebenen.  </p>
+<p>Hier werden den einzelnen numerischen Werten die jeweilige Farbe zugewiesen, falls man die Farbe durch einen angegebenen Wert ausrechnen moechte.</p>
 <pre><code class="language-c#">        private void CalculateColorFromValue()
         {
             Color = Value switch
@@ -363,7 +384,8 @@ Auch hier wird ein Switch benutzt, um den gewuenschten Wert in die dazugehoerige
         }
 </code></pre>
 <h2 id="testing">Testing</h2>
-<p>Kleinere Erklaerung, wie wir die Klassen und Methoden getestet haben.</p></div>
+<p>Durch Tests haben wir ueberprueft ob ColorToValue, ValueToColor und die Toleranz Methoden so funktioren, wie sie funktionieren sollten.<br />
+Dabei haben wir fuer jeden dieser Testkategorien eine eigene Klasse gemacht, damit es uebersichtlich bleibt.</p></div>
             </div>
         </div>
 
