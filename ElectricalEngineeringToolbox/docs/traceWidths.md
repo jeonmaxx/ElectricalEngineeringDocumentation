@@ -2,19 +2,13 @@
 
 ## Einleitung
 
-In diesem Teil wird die Benutzung, der Leiterbahnbreiten Tools erklaert.
-
-## MasterUnit
-
-```c#
-        public abstract class MasterUnit
-        {
-            public string CurrentUnit;
-            public double value;
-        }
-```
+In diesem Teil wird die Benutzung, der Leiterbahnbreiten Tools erklaert. 
+Um die verschiedenen Einheiten und Groessen zu verwalten wurde ein Unit Tree benutzt, um eine gute Performance zu gewaehrleisten.
 
 ## UnitTree
+Als erstes besitzt der Unit Tee ein Enum, welches alle vorhandenen SI-Praefixe enthaelt. 
+Diese waeren natuerlich erweiterbar, falls jemals welche dazu kommen sollten.
+Zudem besitzt das Enum einen Default, da die Praefixe nicht immer benoetigt werden.
 ```c#
         public enum SIPrefix
         {
@@ -45,7 +39,7 @@ In diesem Teil wird die Benutzung, der Leiterbahnbreiten Tools erklaert.
             Quekto = -30
         }
 ```
-
+Danach beginnt auch schon der Unit Tree mit einer Funktion fuer die Nodes.
 ```c#
         public UnitTree()
         {
@@ -143,15 +137,17 @@ In diesem Teil wird die Benutzung, der Leiterbahnbreiten Tools erklaert.
 
             return functionStack;
         }
-```
 
-```c#
         public void AddPath(string startUnit, string targetUnit, ConversionFunction conversionFunc)
         {
             _functional = false;
             _conversion.TryAdd((startUnit,targetUnit), conversionFunc);
         }
+```
 
+Zum Schluss wird noch ueberprueft, ob der Unit Tree funktioniert. 
+Falls dies nicht der Fall sein sollte, dann wird einem in der Konsole deutlich gezeigt, dass etwas nicht ganz funktioniert.
+```c#
         private void checkFunctionality()
         {
         }
@@ -169,9 +165,9 @@ In diesem Teil wird die Benutzung, der Leiterbahnbreiten Tools erklaert.
 ```
 
 ## Calculator
+Ausserdem gibt es eine Klasse, welche die einzelnen Einheiten verwaltet, die Ergebnisse vom Kalkulator sind.  
+Zum einem die benoetigte Flaeche, der inneren Schicht, wie auch der aeusseren Schicht.
 ```c#
-        public Calculator() { }
-
         public double CalculateAreaIntern(double ampere, double tRise)
         {
             double I = ampere;
@@ -186,7 +182,6 @@ In diesem Teil wird die Benutzung, der Leiterbahnbreiten Tools erklaert.
             return area;
         }
 ```
-
 ```c#
         public double CalculateAreaExtern(double ampere, double tRise)
         {
@@ -203,6 +198,7 @@ In diesem Teil wird die Benutzung, der Leiterbahnbreiten Tools erklaert.
         }
 ```
 
+Und natuerlich auch fuer die Breite der Leiterbahnen.
 ```c#
         public double CalculateWidthMil(double area, double thickness)
         {
@@ -215,7 +211,6 @@ In diesem Teil wird die Benutzung, der Leiterbahnbreiten Tools erklaert.
             return width;
         }
 ```
-
 ```c#
         public double CalculateWidthOzFt(double area, double thickness)
         {
