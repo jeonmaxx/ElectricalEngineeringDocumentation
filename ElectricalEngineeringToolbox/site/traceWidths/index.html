@@ -106,7 +106,7 @@
 <h1 id="leiterbahnbreiten">Leiterbahnbreiten</h1>
 <h2 id="einleitung">Einleitung</h2>
 <p>In diesem Teil wird die Benutzung, der Leiterbahnbreiten Tools erklaert. 
-Um die verschiedenen Einheiten und Groessen zu verwalten wurde ein Unit Tree benutzt, um eine gute Performance zu gewaehrleisten.</p>
+Um die verschiedenen Einheiten und Groessen zu verwalten wurde ein Unit Tree benutzt, damit eine gute Performance zu gewaehrleistet wird.</p>
 <h2 id="unittree">UnitTree</h2>
 <p>Als erstes besitzt der Unit Tee ein Enum, welches alle vorhandenen SI-Praefixe enthaelt. 
 Diese waeren natuerlich erweiterbar, falls jemals welche dazu kommen sollten.
@@ -140,13 +140,8 @@ Zudem besitzt das Enum einen Default, da die Praefixe nicht immer benoetigt werd
             Quekto = -30
         }
 </code></pre>
-<p>Danach beginnt auch schon der Unit Tree mit einer Funktion fuer die Nodes.</p>
-<pre><code class="language-c#">        public UnitTree()
-        {
-            _functional = true;
-        }
-
-        private class Node
+<p>Danach beginnt auch schon der Unit Tree mit einer Klassen fuer die Nodes.</p>
+<pre><code class="language-c#">        private class Node
         {
             public readonly string Unit;
             public readonly Node? ParentUnit;
@@ -168,19 +163,23 @@ Zudem besitzt das Enum einen Default, da die Praefixe nicht immer benoetigt werd
             }
         }
 </code></pre>
+<p>Als naechstes folgt eine Methode, fuer die Konvertierung der SI-Praefixe.</p>
 <pre><code class="language-c#">        public double ConvertSIPrefixValue(string startUnit, SIPrefix startPrefix, string targetUnit,
             SIPrefix targetPrefix, double value)
         {
             return ConvertValue(startUnit, targetUnit, value * Math.Pow(10.0, (double) startPrefix)) *
                    Math.Pow(10.0, (double) targetPrefix);
         }
-        public double ConvertValue(string startUnit, string targetUnit, double value)
+</code></pre>
+<p>Hier ist eine Methode, welche den Wert dann konvertiert.</p>
+<pre><code class="language-c#">        public double ConvertValue(string startUnit, string targetUnit, double value)
         {
             IsFunctional();
             if (startUnit.Equals(targetUnit))
             {
                 return value;
             }
+
             if (_conversion.ContainsKey((startUnit,targetUnit)))
             {
                 return _conversion[(startUnit, targetUnit)].Invoke(value);
@@ -197,6 +196,7 @@ Zudem besitzt das Enum einen Default, da die Praefixe nicht immer benoetigt werd
             return value;
         }
 </code></pre>
+<p>Hier wird viel mit dem Unit Tree gearbeitet, um von der Start Unit zur Ziel Unit zu gelangen.</p>
 <pre><code class="language-c#">        Stack&lt;ConversionFunction&gt; CreateConversionStack(string startUnit, string targetUnit)
         {
             Queue&lt;Node&gt; openQueue = new Queue&lt;Node&gt;();

@@ -296,7 +296,6 @@ Hier werden den einzelnen numerischen Werten die jeweilige Farbe zugewiesen, fal
         }
 ```
 
-
 ## Testing
 Durch Tests haben wir ueberprueft ob ColorToValue, ValueToColor und die Toleranz Methoden so funktioren, wie sie funktionieren sollten.  
 Dabei haben wir fuer jeden dieser Testkategorien eine eigene Klasse gemacht, damit es uebersichtlich bleibt.

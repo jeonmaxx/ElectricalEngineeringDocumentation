@@ -3,7 +3,7 @@
 ## Einleitung
 
 In diesem Teil wird die Benutzung, der Leiterbahnbreiten Tools erklaert. 
-Um die verschiedenen Einheiten und Groessen zu verwalten wurde ein Unit Tree benutzt, um eine gute Performance zu gewaehrleisten.
+Um die verschiedenen Einheiten und Groessen zu verwalten wurde ein Unit Tree benutzt, damit eine gute Performance zu gewaehrleistet wird.
 
 ## UnitTree
 Als erstes besitzt der Unit Tee ein Enum, welches alle vorhandenen SI-Praefixe enthaelt. 
@@ -39,13 +39,8 @@ Zudem besitzt das Enum einen Default, da die Praefixe nicht immer benoetigt werd
             Quekto = -30
         }
 ```
-Danach beginnt auch schon der Unit Tree mit einer Funktion fuer die Nodes.
+Danach beginnt auch schon der Unit Tree mit einer Klassen fuer die Nodes.
 ```c#
-        public UnitTree()
-        {
-            _functional = true;
-        }
-
         private class Node
         {
             public readonly string Unit;
@@ -68,7 +63,7 @@ Danach beginnt auch schon der Unit Tree mit einer Funktion fuer die Nodes.
             }
         }
 ```
-
+Als naechstes folgt eine Methode, fuer die Konvertierung der SI-Praefixe.
 ```c#
         public double ConvertSIPrefixValue(string startUnit, SIPrefix startPrefix, string targetUnit,
             SIPrefix targetPrefix, double value)
@@ -76,6 +71,10 @@ Danach beginnt auch schon der Unit Tree mit einer Funktion fuer die Nodes.
             return ConvertValue(startUnit, targetUnit, value * Math.Pow(10.0, (double) startPrefix)) *
                    Math.Pow(10.0, (double) targetPrefix);
         }
+```
+
+Hier ist eine Methode, welche den Wert dann konvertiert.
+```c#
         public double ConvertValue(string startUnit, string targetUnit, double value)
         {
             IsFunctional();
@@ -83,6 +82,7 @@ Danach beginnt auch schon der Unit Tree mit einer Funktion fuer die Nodes.
             {
                 return value;
             }
+
             if (_conversion.ContainsKey((startUnit,targetUnit)))
             {
                 return _conversion[(startUnit, targetUnit)].Invoke(value);
@@ -99,7 +99,7 @@ Danach beginnt auch schon der Unit Tree mit einer Funktion fuer die Nodes.
             return value;
         }
 ```
-
+Hier wird viel mit dem Unit Tree gearbeitet, um von der Start Unit zur Ziel Unit zu gelangen.
 ```c#
         Stack<ConversionFunction> CreateConversionStack(string startUnit, string targetUnit)
         {
