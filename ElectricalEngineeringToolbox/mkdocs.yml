@@ -7,3 +7,10 @@ nav:
 theme:
     name: mkdocs
     locale: de
+
+markdown_extensions:
+  - pymdownx.critic
+  - pymdownx.caret
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.tilde

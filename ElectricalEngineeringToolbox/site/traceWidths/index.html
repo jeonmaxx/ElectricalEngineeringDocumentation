@@ -105,12 +105,13 @@
 
 <h1 id="leiterbahnbreiten">Leiterbahnbreiten</h1>
 <h2 id="einleitung">Einleitung</h2>
-<p>In diesem Teil wird die Benutzung, der Leiterbahnbreiten Tools erklaert. 
-Um die verschiedenen Einheiten und Groessen zu verwalten wurde ein Unit Tree benutzt, damit eine gute Performance zu gewaehrleistet wird.</p>
+<p>In diesem Teil wird die Benutzung, der <mark>Leiterbahnbreiten Tools</mark> erkl&auml;rt. 
+Um die verschiedenen Einheiten und Gr&ouml;&szlig;en zu verwalten wurde ein <strong>Unit Tree</strong> benutzt, damit eine gute Performance zu gew&auml;hrleistet wird. 
+Desweiteren wird die <strong>Calculator</strong> Klasse benutzt, um die Ergebniss Einheiten zu verwalten.</p>
 <h2 id="unittree">UnitTree</h2>
-<p>Als erstes besitzt der Unit Tee ein Enum, welches alle vorhandenen SI-Praefixe enthaelt. 
-Diese waeren natuerlich erweiterbar, falls jemals welche dazu kommen sollten.
-Zudem besitzt das Enum einen Default, da die Praefixe nicht immer benoetigt werden.</p>
+<p>Als erstes besitzt der Unit Tree ein Enum, welches alle vorhandenen <strong>SI-Pr&auml;fixe</strong> enth&auml;lt. 
+Diese w&auml;ren nat&uuml;rlich erweiterbar, falls jemals welche dazu kommen sollten.
+Zudem besitzt das Enum einen Default, da die Pr&auml;fixe nicht immer ben&ouml;tigt werden.</p>
 <pre><code class="language-c#">        public enum SIPrefix
         {
             Quetta = 30,
@@ -140,7 +141,7 @@ Zudem besitzt das Enum einen Default, da die Praefixe nicht immer benoetigt werd
             Quekto = -30
         }
 </code></pre>
-<p>Danach beginnt auch schon der Unit Tree mit einer Klassen fuer die Nodes.</p>
+<p>Danach beginnt auch schon der Unit Tree mit einer Klassen f&uuml;r die <strong>Nodes</strong>.</p>
 <pre><code class="language-c#">        private class Node
         {
             public readonly string Unit;
@@ -163,7 +164,7 @@ Zudem besitzt das Enum einen Default, da die Praefixe nicht immer benoetigt werd
             }
         }
 </code></pre>
-<p>Als naechstes folgt eine Methode, fuer die Konvertierung der SI-Praefixe.</p>
+<p>Als n&auml;chstes folgt eine Methode, f&uuml;r die Konvertierung der SI-Pr&auml;fixe.</p>
 <pre><code class="language-c#">        public double ConvertSIPrefixValue(string startUnit, SIPrefix startPrefix, string targetUnit,
             SIPrefix targetPrefix, double value)
         {
@@ -196,7 +197,7 @@ Zudem besitzt das Enum einen Default, da die Praefixe nicht immer benoetigt werd
             return value;
         }
 </code></pre>
-<p>Hier wird viel mit dem Unit Tree gearbeitet, um von der Start Unit zur Ziel Unit zu gelangen.</p>
+<p>Hier wird viel mit dem Unit Tree gearbeitet, um von der <mark>Start Unit zur Ziel Unit</mark> zu gelangen.</p>
 <pre><code class="language-c#">        Stack&lt;ConversionFunction&gt; CreateConversionStack(string startUnit, string targetUnit)
         {
             Queue&lt;Node&gt; openQueue = new Queue&lt;Node&gt;();
@@ -240,7 +241,7 @@ Zudem besitzt das Enum einen Default, da die Praefixe nicht immer benoetigt werd
             _conversion.TryAdd((startUnit,targetUnit), conversionFunc);
         }
 </code></pre>
-<p>Zum Schluss wird noch ueberprueft, ob der Unit Tree funktioniert. 
+<p>Zum Schluss wird noch &uuml;berpr&uuml;ft, ob der Unit Tree funktioniert. 
 Falls dies nicht der Fall sein sollte, dann wird einem in der Konsole deutlich gezeigt, dass etwas nicht ganz funktioniert.</p>
 <pre><code class="language-c#">        private void checkFunctionality()
         {
@@ -258,8 +259,8 @@ Falls dies nicht der Fall sein sollte, dann wird einem in der Konsole deutlich g
         }
 </code></pre>
 <h2 id="calculator">Calculator</h2>
-<p>Ausserdem gibt es eine Klasse, welche die einzelnen Einheiten verwaltet, die Ergebnisse vom Kalkulator sind.<br />
-Zum einem die benoetigte Flaeche, der inneren Schicht, wie auch der aeusseren Schicht.</p>
+<p>Au&szlig;erdem gibt es eine Klasse, welche die einzelnen Einheiten verwaltet, die Ergebnisse vom Kalkulator sind.<br />
+Zum einem die <strong>ben&ouml;tigte Fl&auml;che</strong>, der inneren Schicht, wie auch der &auml;u&szlig;eren Schicht.</p>
 <pre><code class="language-c#">        public double CalculateAreaIntern(double ampere, double tRise)
         {
             double I = ampere;
@@ -288,7 +289,7 @@ Zum einem die benoetigte Flaeche, der inneren Schicht, wie auch der aeusseren Sc
             return area;
         }
 </code></pre>
-<p>Und natuerlich auch fuer die Breite der Leiterbahnen.</p>
+<p>Und nat&uuml;rlich auch f&uuml;r die <strong>Breite der Leiterbahnen</strong>. Einmal wird dabei mir Mil gerechnet und einmal mit Oz/Ft<sup>2</sup>.</p>
 <pre><code class="language-c#">        public double CalculateWidthMil(double area, double thickness)
         {
             double A = area;
@@ -311,7 +312,8 @@ Zum einem die benoetigte Flaeche, der inneren Schicht, wie auch der aeusseren Sc
             return width;
         }
 </code></pre>
-<h2 id="testing">Testing</h2></div>
+<h2 id="testing">Testing</h2>
+<p>Hier wird in ein paar S&auml;tzen das Testing beschrieben (oder auch nicht, wie ihr wollt).</p></div>
             </div>
         </div>
 

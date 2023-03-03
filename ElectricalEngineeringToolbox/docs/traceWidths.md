@@ -2,13 +2,14 @@
 
 ## Einleitung
 
-In diesem Teil wird die Benutzung, der Leiterbahnbreiten Tools erklaert. 
-Um die verschiedenen Einheiten und Groessen zu verwalten wurde ein Unit Tree benutzt, damit eine gute Performance zu gewaehrleistet wird.
+In diesem Teil wird die Benutzung, der ==Leiterbahnbreiten Tools== erkl&auml;rt. 
+Um die verschiedenen Einheiten und Gr&ouml;&szlig;en zu verwalten wurde ein **Unit Tree** benutzt, damit eine gute Performance zu gew&auml;hrleistet wird. 
+Desweiteren wird die **Calculator** Klasse benutzt, um die Ergebniss Einheiten zu verwalten.
 
 ## UnitTree
-Als erstes besitzt der Unit Tee ein Enum, welches alle vorhandenen SI-Praefixe enthaelt. 
-Diese waeren natuerlich erweiterbar, falls jemals welche dazu kommen sollten.
-Zudem besitzt das Enum einen Default, da die Praefixe nicht immer benoetigt werden.
+Als erstes besitzt der Unit Tree ein Enum, welches alle vorhandenen **SI-Pr&auml;fixe** enth&auml;lt. 
+Diese w&auml;ren nat&uuml;rlich erweiterbar, falls jemals welche dazu kommen sollten.
+Zudem besitzt das Enum einen Default, da die Pr&auml;fixe nicht immer ben&ouml;tigt werden.
 ```c#
         public enum SIPrefix
         {
@@ -39,7 +40,7 @@ Zudem besitzt das Enum einen Default, da die Praefixe nicht immer benoetigt werd
             Quekto = -30
         }
 ```
-Danach beginnt auch schon der Unit Tree mit einer Klassen fuer die Nodes.
+Danach beginnt auch schon der Unit Tree mit einer Klassen f&uuml;r die **Nodes**.
 ```c#
         private class Node
         {
@@ -63,7 +64,7 @@ Danach beginnt auch schon der Unit Tree mit einer Klassen fuer die Nodes.
             }
         }
 ```
-Als naechstes folgt eine Methode, fuer die Konvertierung der SI-Praefixe.
+Als n&auml;chstes folgt eine Methode, f&uuml;r die Konvertierung der SI-Pr&auml;fixe.
 ```c#
         public double ConvertSIPrefixValue(string startUnit, SIPrefix startPrefix, string targetUnit,
             SIPrefix targetPrefix, double value)
@@ -99,7 +100,7 @@ Hier ist eine Methode, welche den Wert dann konvertiert.
             return value;
         }
 ```
-Hier wird viel mit dem Unit Tree gearbeitet, um von der Start Unit zur Ziel Unit zu gelangen.
+Hier wird viel mit dem Unit Tree gearbeitet, um von der ==Start Unit zur Ziel Unit== zu gelangen.
 ```c#
         Stack<ConversionFunction> CreateConversionStack(string startUnit, string targetUnit)
         {
@@ -145,7 +146,7 @@ Hier wird viel mit dem Unit Tree gearbeitet, um von der Start Unit zur Ziel Unit
         }
 ```
 
-Zum Schluss wird noch ueberprueft, ob der Unit Tree funktioniert. 
+Zum Schluss wird noch &uuml;berpr&uuml;ft, ob der Unit Tree funktioniert. 
 Falls dies nicht der Fall sein sollte, dann wird einem in der Konsole deutlich gezeigt, dass etwas nicht ganz funktioniert.
 ```c#
         private void checkFunctionality()
@@ -165,8 +166,8 @@ Falls dies nicht der Fall sein sollte, dann wird einem in der Konsole deutlich g
 ```
 
 ## Calculator
-Ausserdem gibt es eine Klasse, welche die einzelnen Einheiten verwaltet, die Ergebnisse vom Kalkulator sind.  
-Zum einem die benoetigte Flaeche, der inneren Schicht, wie auch der aeusseren Schicht.
+Au&szlig;erdem gibt es eine Klasse, welche die einzelnen Einheiten verwaltet, die Ergebnisse vom Kalkulator sind.  
+Zum einem die **ben&ouml;tigte Fl&auml;che**, der inneren Schicht, wie auch der &auml;u&szlig;eren Schicht.
 ```c#
         public double CalculateAreaIntern(double ampere, double tRise)
         {
@@ -198,7 +199,7 @@ Zum einem die benoetigte Flaeche, der inneren Schicht, wie auch der aeusseren Sc
         }
 ```
 
-Und natuerlich auch fuer die Breite der Leiterbahnen.
+Und nat&uuml;rlich auch f&uuml;r die **Breite der Leiterbahnen**. Einmal wird dabei mir Mil gerechnet und einmal mit Oz/Ft^2^.
 ```c#
         public double CalculateWidthMil(double area, double thickness)
         {
@@ -225,3 +226,4 @@ Und natuerlich auch fuer die Breite der Leiterbahnen.
 ```
 
 ## Testing
+Hier wird in ein paar S&auml;tzen das Testing beschrieben (oder auch nicht, wie ihr wollt).

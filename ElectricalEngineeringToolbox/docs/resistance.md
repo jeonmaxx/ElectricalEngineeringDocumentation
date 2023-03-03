@@ -2,14 +2,14 @@
 
 ## Einleitung
 
-In diesem Teil wird die Benutzung, der Widerstand Tools erklaert.
-Es gibt fuer die Widerstand Tools momentan Drei Klassen. 
-Einmal die **Resistor** Klasse, die hauptsaechlich die Werte verwaltet. 
+In diesem Teil wird die Benutzung, der ==Widerstand Tools== erkl&auml;rt.
+Es gibt f&uuml;r die Widerstand Tools momentan Drei Klassen. 
+Einmal die **Resistor** Klasse, die haupts&auml;chlich die Werte verwaltet. 
 Dann die **Factor** Klasse, welche den Factorring bearbeitet. 
 Und die **Tolerance** Klasse, die den Toleranzring bearbeitet.
 
 ## Resistor
-Zuerst gibt es einen Enum, fuer die einzelnen Farben der Ringe, welchen man erweitern koennte, falls noch Farben dazu kommen sollten.
+Zuerst gibt es ein Enum, f&uuml;r die einzelnen Farben der Ringe, welchen man erweitern k&ouml;nnte, falls noch Farben dazu kommen sollten.
 ```c#
     public enum ResistorRing
     {
@@ -18,8 +18,8 @@ Zuerst gibt es einen Enum, fuer die einzelnen Farben der Ringe, welchen man erwe
         Gold = 10, Silver = 11, Pink = 12
     }
 ```
-Um den Farbcode von **Farben zu Wert** zu konvertieren, gibt es momentan zwei Konstruktoren. Einmal fuer Vier Ringe und natuerlich auch fuer Fuenf Ringe. 
-Als Beispiel wird der fuer Vier Ringe gezeigt:
+Um den Farbcode von **Farben zu Wert** zu konvertieren, gibt es momentan zwei Konstruktoren. Einmal f&uuml;r Vier Ringe und nat&uuml;rlich auch f&uuml;r F&uuml;nf Ringe. 
+Als Beispiel wird der f&uuml;r Vier Ringe gezeigt:
 ```c#
         public Resistor(ResistorRing ring1, ResistorRing ring2, ResistorRing factor, ResistorRing tolerance)
         {
@@ -34,13 +34,13 @@ Als Beispiel wird der fuer Vier Ringe gezeigt:
             UpdateValueFromColors();
         }
 ```
-Bei dieser Funktion muss man angeben, welche Farben die ersten beiden Ringe, der Faktorring und der Toleranzring hat.
-Zuerst wird geprueft, ob die Farben, die man eingetragen hat, auch angenommen werden koennen. 
-Der Factorring wird an die Faktor Klasse und der Toleranzring an die Toleranz Klasse uebergeben.
-Dann sagt die Funktion, dass hier nur Vier Ringe verwendet werden (Beim anderen Konstruktor sagt er an der Stelle Fuenf Ringe) 
+Bei dieser Funktion muss man angeben, ==welche Farben die ersten beiden Ringe, der Faktorring und der Toleranzring hat==.
+Zuerst wird gepr&uuml;ft, ob die Farben, die man eingetragen hat, auch angenommen werden k&ouml;nnen. 
+Der Factorring wird an die Faktor Klasse und der Toleranzring an die Toleranz Klasse &uuml;bergeben.
+Dann sagt die Funktion, dass hier nur Vier Ringe verwendet werden (Beim anderen Konstruktor sagt er an der Stelle F&uuml;nf Ringe) 
 und zum Schluss wird zum finalen berechnen noch die Funktion "UpdateValueFromColors" verwendet.  
 
-Natuerlich gibt es auch einen Konstruktor, wenn man von einem **Wert zu Farben** konvertieren will:
+Nat&uuml;rlich gibt es auch einen Konstruktor, wenn man von einem **Wert zu Farben** konvertieren will:
 ```c#
         public Resistor(int value, Tolerance tolerance, RingCount ringCount)
         {
@@ -85,15 +85,15 @@ Natuerlich gibt es auch einen Konstruktor, wenn man von einem **Wert zu Farben**
             UpdateValueFromColors();
         }
 ```
-Hierbei muss man angeben, welchen Wert man braucht, welche Toleranz man haben moechte und wie viele Ringe der Widerstandsfarbcode haben soll.
-Dann gibt es einen Switch fuer beide Faelle der Ringanzahl, also sowohl fuer Vier, als auch fuer Fuenf Ringe. 
-Dabei wird der Wert dann gekuerzt, da nur die ersten beiden, beziehungsweise Drei Zahlen wichtig fuer die Umrechnung sind.
-Dabei wird der cFaktor bei jedem kuerzen erhoeht, damit das Program bestimmen kann, welche Faktorfarbe benoetigt wird.
+Hierbei muss man angeben, ==welchen Wert man braucht, welche Toleranz man haben m&ouml;chte und wie viele Ringe der Widerstandsfarbcode haben soll==.
+Dann gibt es einen Switch f&uuml;r beide F&auml;lle der Ringanzahl, also sowohl f&uuml;r Vier, als auch f&uuml;r F&uuml;nf Ringe. 
+Dabei wird der Wert dann gek&uuml;rzt, da nur die ersten beiden, beziehungsweise Drei Zahlen wichtig f&uuml;r die Umrechnung sind.
+Dabei wird der cFaktor bei jedem k&uuml;rzen erh&ouml;ht, damit das Program bestimmen kann, welche Faktorfarbe ben&ouml;tigt wird.
 Dann berechnet er die einzelnen Ziffern, der relevanten Zahl, mit der Hilfe von geteilt und Modulo.
-So kann er also bestimmen, welche Farbe sowohl der erste, als auch der zweite und ggf. dritte Ring benoetigt.
+So kann er also bestimmen, welche Farbe sowohl der erste, als auch der zweite und ggf. dritte Ring ben&ouml;tigt.
 Der Faktor wird dann mit Hilfe der Faktor Klasse und cFaktor berechnet und die Toleranz musste man hier selbst bestimmen.
 
-Und zu guter Letzt gibt es noch die "UpdateValueFromColors" Funktion, welche in allen Konstruktoren fuer die Umrechnung benutzt wird:
+Und zu guter Letzt gibt es noch die "UpdateValueFromColors" Funktion, welche in allen Konstruktoren f&uuml;r die Umrechnung benutzt wird:
 ```c#
         private void UpdateValueFromColors()
         {
@@ -106,12 +106,12 @@ Und zu guter Letzt gibt es noch die "UpdateValueFromColors" Funktion, welche in 
             _value = (long) (tmp * _factor.Value);
         }
 ```
-Auch hier gibt es wieder eine Moeglichkeit, den Wert fuer Vier, als auch fuer Fuenf Ringe auszurechnen. 
-Der Wert, der dabei raus kommt wird dann noch mit dem Wert des Faktors multipliziert und schon hat man den benoetigten Wert.
+Auch hier gibt es wieder eine M&ouml;glichkeit, den Wert f&uuml;r Vier, als auch f&uuml;r F&uuml;nf Ringe auszurechnen. 
+Der Wert, der dabei raus kommt wird dann noch mit dem Wert des Faktors multipliziert und schon hat man den ben&ouml;tigten Wert.
 
 ## Factor
-Die Faktor Klasse hat nur Drei Hauptteile, die relativ simpel und einfach zu erklaeren sind.
-Hier werden zuerst die einzelnen Faktoren aufgelistet, welche auch hier erweiterbar waeren, falls noch welche dazu kommen sollten.
+Die Faktor Klasse hat nur Drei Hauptteile, die relativ simpel und einfach zu erkl&auml;ren sind.
+Hier werden zuerst die einzelnen Faktoren aufgelistet, welche auch hier erweiterbar w&auml;ren, falls noch welche dazu kommen sollten.
 ```c#
         public static Factor One = new Factor(1);
         public static Factor Ten = new Factor(10);
@@ -127,8 +127,8 @@ Hier werden zuerst die einzelnen Faktoren aufgelistet, welche auch hier erweiter
         public ResistorRing Color { get; }
         public double Value { get; }
 ```
-Wenn man von **Farbe zu Wert** rechnen moechte, dann kann man das ganz einfach mit dieser Funktion machen, indem man ihr die gewuenschte Farbe uebergibt. 
-In dem Switch wird festgelegt welche Farbe welchen Faktor bekommt und dieser Faktorwert wird dann zuruekgegeben.
+Wenn man von **Farbe zu Wert** rechnen m&ouml;chte, dann kann man das ganz einfach mit dieser Funktion machen, indem man ihr die gew&uuml;nschte Farbe &uuml;bergibt. 
+In dem Switch wird festgelegt welche Farbe welchen Faktor bekommt und dieser Faktorwert wird dann zur&uuml;kgegeben.
 ```c#
         public Factor(ResistorRing color)
         {
@@ -154,8 +154,8 @@ In dem Switch wird festgelegt welche Farbe welchen Faktor bekommt und dieser Fak
         }
 ```
 
-Hiermit kann man von **Wert zu Farbe** rechnen, indem man den Wert uebergibt. 
-Auch hier wird ein Switch benutzt, um den gewuenschten Wert in die dazugehoerige Farbe umzuwandeln.
+Hiermit kann man von **Wert zu Farbe** rechnen, indem man den Wert &uuml;bergibt. 
+Auch hier wird ein Switch benutzt, um den gew&uuml;nschten Wert in die dazugeh&ouml;rige Farbe umzuwandeln.
 ```c#
         public Factor(double value)
         {
@@ -182,8 +182,8 @@ Auch hier wird ein Switch benutzt, um den gewuenschten Wert in die dazugehoerige
 
 
 ## Tolerance
-Auch hier gibt es wieder einen Enum. Dieser verfuegt ueber die Drei verschiedenen Rundungs-Modi: Abrunden, Aufrunden und zum naechsten runden. 
-Danach werden den verschiedenen Toleran Moeglichkeiten noch ihre jeweilige Ringfarbe zugeteilt.
+Auch hier gibt es wieder einen Enum. Dieser verf&uuml;gt &uuml;ber die Drei verschiedenen Rundungs-Modi: ==Abrunden, Aufrunden und zum n&auml;chsten runden==. 
+Danach werden den verschiedenen Toleran M&ouml;glichkeiten noch ihre jeweilige Ringfarbe zugeteilt.
 ```c#
         public enum RoundMode { ToLower, ToUpper, Nearest }
 
@@ -199,8 +199,8 @@ Danach werden den verschiedenen Toleran Moeglichkeiten noch ihre jeweilige Ringf
         public ResistorRing Color { get; private set; }
         public double Value { get; }
 ```
-Dieser Konstruktor ist dafuer zustaendig, dass wenn man eine Farbe angibt, man den passenden Toleranzwert ausgegeben bekommt. 
-Falls man eine Farbe angeben sollte, fuer welche es keinen Wert geben sollte, dann wird eine Exception getriggert, damit daraus keine Fehler entstehen koennen.
+Dieser Konstruktor ist daf&uuml;r zust&auml;ndig, dass wenn man eine Farbe angibt, man den passenden Toleranzwert ausgegeben bekommt. 
+Falls man eine Farbe angeben sollte, f&uuml;r welche es keinen Wert geben sollte, dann wird eine Exception getriggert, damit daraus keine Fehler entstehen koennen.
 ```c#
         public Tolerance(ResistorRing ring)
         {
@@ -224,8 +224,8 @@ Falls man eine Farbe angeben sollte, fuer welche es keinen Wert geben sollte, da
             };
         }
 ```
-Dieser Konstruktor ist fuer das Kovertieren von Wert zu Farbe zustaending. 
-Zudem muss man auch den Rundungsmodus auswaehlen, damit einer der moeglichen Farben bei der Rechnung als Ergebnis herauskommen kann. Default ist dabei das Abrunden.
+Dieser Konstruktor ist f&uuml;r das Kovertieren von Wert zu Farbe zust&auml;nding. 
+Zudem muss man auch den Rundungsmodus ausw&auml;hlen, damit einer der m&ouml;glichen Farben bei der Rechnung als Ergebnis herauskommen kann. Default ist dabei das Abrunden.
 ```c#
         public Tolerance(double value, RoundMode mode = RoundMode.ToLower)
         {
@@ -259,23 +259,23 @@ Zudem muss man auch den Rundungsmodus auswaehlen, damit einer der moeglichen Far
             CalculateColorFromValue();
         }
 ```
-Zunaechst gibt es ein Array, wo alle erlaubten Ergebnisse eingetragen sind. Dieses ist fuer die folgenden Rechungen nuetzlich.  
-Als naechstes folgt ein Switch fuer die verschiedenen Rundungs Modi. 
-Beim **Abrunden** werden die erlaubten Zahlen zuerst vom Groessten zum Kleinsten sortiert. 
-Allerdings werden dabei nur die Werte beachtet, die kleiner als der angebene Wert sind. 
-Danach wird der erste von diesen Werten (also der groesste Wert, von denen die kleiner als der angebene sind) zu dem Wert von lowTargetValue. 
-Wenn alle erlaubten Werte groesser als der angebene Wert sind, dann wird lowTargetValue zu 0. 
+Zun&auml;chst gibt es ein Array, wo alle erlaubten Ergebnisse eingetragen sind. Dieses ist f&uuml;r die folgenden Rechungen n&uuml;tzlich.  
+Als n&auml;chstes folgt ein Switch f&uuml;r die verschiedenen Rundungs Modi. 
+Beim **Abrunden** werden die erlaubten Zahlen zuerst vom ==Gr&ouml;&szlig;ten bis zum Kleinsten== sortiert. 
+Allerdings werden dabei nur die Werte beachtet, die kleiner als der angebene Wert sind.
+Danach wird der erste von diesen Werten (also der gr&ouml;&szlig;te Wert, von denen die kleiner als der angebene sind) zu dem Wert von lowTargetValue. 
+Wenn alle erlaubten Werte gr&ouml;&szlig;er als der angebene Wert sind, dann wird lowTargetValue zu 0. 
 Wenn lowTargetValue 0 ist, wird der kleinste Wert aus dem erlaubten Werte Array genommen, ansonsten bleibt es beim Wert von lowTargetValue.  
-Beim **Aufrunden** ist es so aehnlich, nur dass vom Kleinsten bis zum Groessten sortiert wird. 
-Die Werte, welche kleiner als der angebene Wert sind werden dabei uebersprungen und dann wird der kleinste Wert von denen, die groesser als der angegebene Wert highTargetValue zugewiesen. 
-Wenn dieser Wert auch hier 0 sein sollte, wird highTargetValue zum groessten Wert von den erlaubten Werten.  
-Beim **Runden zum Naechsten** wird Aggregate benutzt um herauszufinden, welcher Wert am naechsten an dem angegebenen ist. 
-Dabei wird geprueft ob der x Wert minus dem angebenen Wert kleiner als der y Wert minus dem angegebenen Wert ist. 
-Wenn ja, dann bleibt der x Wert beim naechsten Durchlauf x und wenn nicht, dann wird der y Wert zum neuen x Wert. 
+Beim **Aufrunden** ist es so &auml;hnlich, nur dass vom ==Kleinsten bis zum Gr&ouml;&szlig;ten== sortiert wird. 
+Die Werte, welche kleiner als der angebene Wert sind werden dabei &uuml;bersprungen und dann wird der kleinste Wert von denen, die gr&ouml;&szlig;er als der angegebene Wert highTargetValue zugewiesen. 
+Wenn dieser Wert auch hier 0 sein sollte, wird highTargetValue zum gr&ouml;&szlig;ten Wert von den erlaubten Werten.  
+Beim **Runden zum N&auml;chsten** wird Aggregate benutzt um herauszufinden, welcher Wert am n&auml;chsten an dem angegebenen ist. 
+Dabei wird gepr&uuml;ft ob der x Wert minus dem angebenen Wert kleiner als der y Wert minus dem angegebenen Wert ist. 
+Wenn ja, dann bleibt der x Wert beim n&auml;chsten Durchlauf x und wenn nicht, dann wird der y Wert zum neuen x Wert. 
 Das geht solange, bis alle Werte vom Array durchgelaufen sind. 
-Der letzte x Wert bleibt dann der Wert von Value und ist somit der naechste Wert an dem angegebenen.  
+Der letzte x Wert bleibt dann der Wert von Value und ist somit der n&auml;chste Wert an dem angegebenen.  
 
-Hier werden den einzelnen numerischen Werten die jeweilige Farbe zugewiesen, falls man die Farbe durch einen angegebenen Wert ausrechnen moechte.
+Hier werden den einzelnen numerischen Werten die jeweilige Farbe zugewiesen, falls man die Farbe durch einen angegebenen Wert ausrechnen m&ouml;chte.
 ```c#
         private void CalculateColorFromValue()
         {
@@ -297,5 +297,5 @@ Hier werden den einzelnen numerischen Werten die jeweilige Farbe zugewiesen, fal
 ```
 
 ## Testing
-Durch Tests haben wir ueberprueft ob ColorToValue, ValueToColor und die Toleranz Methoden so funktioren, wie sie funktionieren sollten.  
-Dabei haben wir fuer jeden dieser Testkategorien eine eigene Klasse gemacht, damit es uebersichtlich bleibt.
+Durch Tests haben wir &uuml;berpr&uuml;ft ob ColorToValue, ValueToColor und die Toleranz Methoden so funktioren, wie sie funktionieren sollten.  
+Dabei haben wir f&uuml;r jeden dieser Testkategorien eine eigene Klasse gemacht, damit es &uuml;bersichtlich bleibt.
