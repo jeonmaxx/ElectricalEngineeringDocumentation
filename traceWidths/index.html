@@ -106,8 +106,8 @@
 <h1 id="leiterbahnbreiten">Leiterbahnbreiten</h1>
 <h2 id="einleitung">Einleitung</h2>
 <p>In diesem Teil wird die Benutzung, der <mark>Leiterbahnbreiten Tools</mark> erkl&auml;rt. 
-Um die verschiedenen Einheiten und Gr&ouml;&szlig;en zu verwalten wurde ein <strong>Unit Tree</strong> benutzt, damit eine gute Performance zu gew&auml;hrleistet wird. 
-Desweiteren wird die <strong>Calculator</strong> Klasse benutzt, um die Ergebniss Einheiten zu verwalten.</p>
+Um die verschiedenen Einheiten und Gr&ouml;&szlig;en zu verwalten wurde ein <strong>Unit Tree</strong> benutzt, damit eine gute Performance gew&auml;hrleistet werden kann. 
+Desweiteren wird die <strong>Calculator</strong> Klasse benutzt, um die Ergebniseinheiten zu verwalten.</p>
 <h2 id="unittree">UnitTree</h2>
 <p>Als erstes besitzt der Unit Tree ein Enum, welches alle vorhandenen <strong>SI-Pr&auml;fixe</strong> enth&auml;lt. 
 Diese w&auml;ren nat&uuml;rlich erweiterbar, falls jemals welche dazu kommen sollten.
@@ -141,7 +141,7 @@ Zudem besitzt das Enum einen Default, da die Pr&auml;fixe nicht immer ben&ouml;t
             Quekto = -30
         }
 </code></pre>
-<p>Danach beginnt auch schon der Unit Tree mit einer Klassen f&uuml;r die <strong>Nodes</strong>. 
+<p>Danach beginnt auch schon der Unit Tree mit einer Klasse f&uuml;r die <strong>Nodes</strong>. 
 Die Klasse besitzt zum einem einen String mit der Unit und auch der Parent Unit. 
 Ein Node besteht dabei immer aus einer Unit und dessen Parent Unit.</p>
 <pre><code class="language-c#">        private class Node
@@ -168,7 +168,7 @@ Ein Node besteht dabei immer aus einer Unit und dessen Parent Unit.</p>
 </code></pre>
 <p>Nach der Node Klasse, folgt die <strong>BackTraceNode</strong> Klasse. 
 Diese ist vorallem wichtig, um zu &uuml;berpr&uuml;fen, ob der Unit Tree funktioniert. 
-Sie besteht aus einem string, welcher die aktuelle Unit beihaltet und einer Liste mit dem Parent Units.</p>
+Sie besteht aus einem String, welcher die aktuelle Unit beinhaltet und einer Liste mit den Parent Units.</p>
 <pre><code class="language-c#">        private class BackTraceNode
         {
             public readonly string Unit;
@@ -191,10 +191,10 @@ Sie besteht aus einem string, welcher die aktuelle Unit beihaltet und einer List
         }
 </code></pre>
 <p>Als n&auml;chstes folgt eine Methode, f&uuml;r die <strong>Konvertierung der SI-Pr&auml;fixe</strong>. 
-Sie ben&ouml;tigt die Start und Ziel Unit, sowie den Start und Target Pr&auml;fix. 
+Sie ben&ouml;tigt die Start und Ziel Unit sowie den Start und Target Pr&auml;fix. 
 Zudem muss auch ein Wert angegeben werden. 
 Dann werden die Start und Ziel Unit an ConvertValue &uuml;bergeben. 
-Der angegebene Wert wird dann mit 10<sup>StartPr&auml;fix</sup> mal 10<sup>ZielPr&auml;fix</sup> mal genommen und auch an ConvertValue &uuml;bergeben.</p>
+Der angegebene Wert wird dann mit 10<sup>StartPr&auml;fix</sup> und 10<sup>ZielPr&auml;fix</sup> multipliziert und auch an ConvertValue &uuml;bergeben.</p>
 <pre><code class="language-c#">        public double ConvertSIPrefixValue(string startUnit, SIPrefix startPrefix, string targetUnit,
             SIPrefix targetPrefix, double value)
         {
@@ -271,14 +271,14 @@ Solange dieser Stack gr&ouml;&szlig;er als 0 ist, wird das oberste Element vom S
             return functionStack;
         }
 </code></pre>
-<p>Zuerst wird eine Queue f&uuml;r die <mark>Openlist</mark> und eine List f&uuml;r die <mark>Closedlist</mark> angelegt. Noch dazu kommt ein HashSet f&uuml;r die bearbeiteten Units. 
+<p>Zuerst wird eine Queue f&uuml;r die <mark>Openlist</mark> und eine List f&uuml;r die <mark>Closedlist</mark> angelegt. Noch dazu kommt ein HashSet f&uuml;r die bearbeiteten Units (ProcessedUnits). 
 Angefangen wird damit, dass der <mark>Openlist</mark> die Start Unit hinzugef&uuml;gt wird. Die Parent Unit ist dabei nat&uuml;rlich Null, da die Start Unit in der Regel kein Parent hat. 
-ProcessedUnits wird die Start Unit auch &uuml;bergeben. 
+An ProcessedUnits wird die Start Unit auch &uuml;bergeben. 
 Solange _conversion nicht die oberste Unit der <mark>Openlist</mark> und die Ziel Unit beinhaltet, bekommt currentItem die oberste Unit aus der <mark>Openlist</mark>, welches gleichzeitig aus der Liste entfernt wird. 
 Die Unit von currentItem kommt dann in die <mark>Closedlist</mark>. 
-F&uuml;r jedes Element in _conversion wo, x.from das currentItem ist, wird gerpr&uuml;ft ob die processedUnits y.to nicht beinhalten. 
+F&uuml;r jedes Element in _conversion wo, x.from das currentItem ist, wird gepr&uuml;ft, ob die processedUnits y.to nicht beinhalten. 
 Falls dies der Fall sein sollte, wird der <mark>Openlist</mark> y.to und currentItem hinzugef&uuml;gt. ProcessedUnits wird auch y.to hizugef&uuml;gt.<br />
-Danach wird der <mark>Closedlist</mark> die oberste Unit der <mark>Openlist</mark> hinzugef&uuml;gt und es wird der functionStack gemacht. 
+Danach wird der <mark>Closedlist</mark> die oberste Unit der <mark>Openlist</mark> hinzugef&uuml;gt und es wird der functionStack erstellt. 
 Zudem kommt eine neue Node, die currentNode, welche die Ziel Unit und das oberste Element der <mark>Openlist</mark> beinhaltet. 
 Solange die Parent Unit der currentNode nicht Null ist, wird die currentNode Unit ausgegeben. 
 Der functionStack bekommt oben drauf noch _conversion mit der Parent Unit von currentNode und die Unit von currentNode. 
@@ -345,24 +345,24 @@ Hierbei wird _conversion die Start und Ziel Unit und conversionFunc &uuml;bergeb
             }
             else
             {
-                _functional =true;
+                _functional = true;
             }
         }
 </code></pre>
-<p>Dabei wird zuerst das <mark>Dictionary tracebook</mark> angelegt und eine Queue mit den noch <mark>unbearbeiteten Nodes (openNodes)</mark>. 
+<p>Dabei wird zuerst das <mark>Dictionary tracebook</mark> und eine Queue mit den noch <mark>unbearbeiteten Nodes (openNodes)</mark> angelegt. 
 Zum tracebook wird zuerst das erste Element 'from' von _conversion und Null hinzugef&uuml;gt. Bei OpenNodes wird dieses erste Element auch hinzugef&uuml;gt.<br />
-Danach wird, solange etwas in openNodes drin ist, f&uuml;r jedes Element in _conversion wo x.from gleich das oberste Element von openNodes ist gepr&uuml;ft, ob tracebook y.to nicht beinhaltet. 
+Danach wird, solange etwas in openNodes vorhanden ist, f&uuml;r jedes Element in _conversion wo x.from gleich das oberste Element von openNodes gepr&uuml;ft, ob tracebook y.to nicht beinhaltet. 
 Wenn das der Fall sein sollte, dann wird y.to und eine Liste mit y.from dem tracebook hinzugef&uuml;gt. 
-Ansonsten, wenn y.to vom tracebook nicht gleich Null ist, dann wird zu y.to vom tracebook y.from hinzugef&uuml;gt. 
+Ansonsten, wenn y.to vom tracebook nicht gleich Null ist, wird zu y.to vom tracebook y.from hinzugef&uuml;gt. 
 Und wenn y.from vom tracebook nicht gleich Null ist, dann wird eine neue Queue mit dem Namen <mark>backtrace</mark> angelegt. 
 F&uuml;r jeden parent in backtrace wird &uuml;berpr&uuml;ft, ob dieser Null ist. Wenn dies nicht der Fall sein sollte, dann wird dieser parent dem tracebook hinzugef&uuml;gt. 
 Danach wird y.from vom tracebook wieder auf Null gesetzt. 
-Solange in backtrace noch Elemente drin sind, wird das oberste Element in backtrace gepr&uuml;ft ob der parent vom tracebook gleich Null ist. 
+Solange in backtrace noch Elemente vorhanden sind, wird vom obersten Element in backtrace gepr&uuml;ft ob der parent vom tracebook gleich Null ist. 
 Sollte dies nicht der Fall sein, dann wird der parent dem backtrace hinzugef&uuml;gt. Danach werden das backtrace und die openNodes noch geleert.<br />
-Zum Schluss wird noch gepr&uuml;ft, ob die Anzahl an Values aus tracebook, welche nicht gleich Null sind gr&ouml;&szlig;er als 0 ist 
-oder ob das tracebook weniger Elemente hat als _conversion y.from Elemente hat. 
-Wenn eine der beiden Bedingungen stimmen sollte, dann wird der Unit Tree nicht funktionieren. Ansonsten wird er funktionieren.</p>
-<p>Wenn das <strong>bool _functional</strong> false sein sollte, dann wird der Baum gepr&uuml;ft um zu schauen ob es wirklich false ist. 
+Zum Schluss wird noch gepr&uuml;ft, ob die Anzahl an Values aus dem tracebook, welche nicht gleich Null sind gr&ouml;&szlig;er als 0 sind 
+oder ob das tracebook weniger Elemente als _conversion y.from Elemente hat. 
+Wenn eine der beiden Bedingungen stimmen sollte, dann wird der Unit Tree nicht funktionieren.</p>
+<p>Wenn das <strong>bool _functional</strong> false sein sollte, dann wird der Unit Tree gepr&uuml;ft, um zu schauen, ob es wirklich false ist. 
 Wenn das bool dann immer noch false sein sollte, dann wird einem in der Konsole deutlich gezeigt, dass etwas nicht ganz funktioniert.</p>
 <pre><code class="language-c#">        public bool IsFunctional()
         {
@@ -380,8 +380,8 @@ Wenn das bool dann immer noch false sein sollte, dann wird einem in der Konsole 
         }
 </code></pre>
 <h2 id="calculator">Calculator</h2>
-<p>Au&szlig;erdem gibt es eine Klasse, welche die einzelnen Einheiten verwaltet, die Ergebnisse vom Kalkulator sind.<br />
-Zum einem die <strong>ben&ouml;tigte Fl&auml;che</strong>, der inneren Schicht, wie auch der &auml;u&szlig;eren Schicht.</p>
+<p>Au&szlig;erdem gibt es eine Klasse, die die einzelnen Einheiten der Ergebnisse vom Kalkulator verwaltet.<br />
+Dazu geh&ouml;ren sowohl die <strong>ben&ouml;tigte Fl&auml;che</strong> der inneren Schicht als auch der &auml;u&szlig;eren Schicht.</p>
 <pre><code class="language-c#">        public double CalculateAreaIntern(double ampere, double tRise)
         {
             double I = ampere;
@@ -398,7 +398,7 @@ Zum einem die <strong>ben&ouml;tigte Fl&auml;che</strong>, der inneren Schicht, 
 </code></pre>
 <pre><code class="language-c#">        public double CalculateAreaExtern(double ampere, double tRise)
         {
-             double I = ampere;
+            double I = ampere;
             double TRise = tRise;
             double constantK = 0.048;
             double constantB = 0.44;
@@ -410,7 +410,7 @@ Zum einem die <strong>ben&ouml;tigte Fl&auml;che</strong>, der inneren Schicht, 
             return area;
         }
 </code></pre>
-<p>Und nat&uuml;rlich auch f&uuml;r die <strong>Breite der Leiterbahnen</strong>. Einmal wird dabei mir Mil gerechnet und einmal mit Oz/Ft<sup>2</sup>.</p>
+<p>Und nat&uuml;rlich auch f&uuml;r die <strong>Breite der Leiterbahnen</strong>. Einmal wird dabei mit Mil gerechnet und einmal mit Oz/Ft<sup>2</sup>.</p>
 <pre><code class="language-c#">        public double CalculateWidthMil(double area, double thickness)
         {
             double A = area;
@@ -428,7 +428,7 @@ Zum einem die <strong>ben&ouml;tigte Fl&auml;che</strong>, der inneren Schicht, 
 
         }
 </code></pre>
-<p>Hier wird dann direkt &uuml;berpr&uuml;ft, ob der eingegebene Wert, verwendet werden kann oder ob dieser nicht erlaubt ist.</p>
+<p>Hier wird dann direkt &uuml;berpr&uuml;ft, ob der eingegebene Wert verwendet werden kann oder ob dieser nicht erlaubt ist.</p>
 <pre><code class="language-c#">        public bool CheckInputValue(double ampereValue, double temperatureValue, double ThicknessValue, double traceLengthValue, double temperaturRiseValue)
         {
             double[] InputValue = { ampereValue, temperatureValue, ThicknessValue, traceLengthValue, temperaturRiseValue };
@@ -441,7 +441,7 @@ Zum einem die <strong>ben&ouml;tigte Fl&auml;che</strong>, der inneren Schicht, 
         }
 </code></pre>
 <p>Als n&auml;chstes wird auch &uuml;berpr&uuml;ft, ob die eingegebene Unit zul&auml;ssig ist. 
-Falls dies nicht der Fall sein sollte, dann gibt das bool false aus.</p>
+Falls dies nicht der Fall sein sollte, dann gibt das Bool false aus.</p>
 <pre><code class="language-c#">        public bool CheckInputUnit(double targetUnitTemperature, double targetUnitThickness, double targetUnitTraceLength, double targetUnitTemperaturRise, double targetUnitWidthIntern, double targetUnitWidthExtern)
         {
             int tempResult = 0;
@@ -481,12 +481,12 @@ Falls dies nicht der Fall sein sollte, dann gibt das bool false aus.</p>
 </code></pre>
 <h2 id="testing">Testing</h2>
 <p>Um sicher zu stellen, dass alles funktioniert, haben wir mit Unit Tests verschiedene Methoden und Klassen getestet. 
-Zum einen wurde der Calculator getestet, die Pr&auml;fixe wurden getestet und es wurden Tests mit verschiedenen Zahlen gemacht. 
+Zum einen wurden der Kalkulator sowie die Pr&auml;fixe getestet und es wurden Tests mit verschiedenen Zahlen gemacht. 
 Zudem wird zus&auml;tzlich &uuml;berpr&uuml;ft, ob der Unit Tree funktioniert, da dieser eins der wichtigsten Elemente der Klasse ist.  </p>
 <p><strong>Calculator Test</strong><br />
-Um den Unit Tree zu Testen gibt es viele Funktionen, um sicher zu stellen, dass keine Fehler auftauchen k&ouml;nnen.<br />
+Um den Unit Tree zu testen gibt es viele Funktionen, um sicher zu stellen, dass keine Fehler auftauchen k&ouml;nnen.<br />
 Zuerst wird &uuml;berpr&uuml;ft, ob die Konvertierung der Einheiten funktioniert. 
-Dabei werden alle Einheiten benutzt, um eine M&ouml;glichkeiten zu beinhalten.</p>
+Dabei werden alle Einheiten benutzt, um alle M&ouml;glichkeiten zu &uuml;berpr&uuml;fen.</p>
 <pre><code class="language-c#">        [TestMethod]
         public void CheckSelfConversion()
         {
@@ -681,7 +681,7 @@ Wenn ein Ergebnis nicht dem vorgesehenen Wert entspricht, dann schl&auml;gt der 
         }
 </code></pre>
 <p>Als n&auml;chstes wird die Calculator Klasse getestet. 
-Dabei werden die Ergebnisse der Methoden mit einem erwarteten Wert verglichen und so &uuml;berpr&uuml;ft ob bei den Rechungen, das richtige rauskommt.</p>
+Dabei werden die Ergebnisse der Methoden mit einem erwarteten Wert verglichen und so &uuml;berpr&uuml;ft, ob bei den Rechungen das Richtige rauskommt.</p>
 <pre><code class="language-c#">        [TestMethod]
         public void CheckLayerCalculation()
         {
@@ -706,7 +706,7 @@ Dabei werden die Ergebnisse der Methoden mit einem erwarteten Wert verglichen un
             Assert.AreEqual(11.825835340416246, widthExternOzFt);
         }
 </code></pre>
-<p>Hier wird getestet, ob Klasse negative Zahlen nicht annimmt, da mit diesen kein korrektes Ergebnis geliefert werden k&ouml;nnte.</p>
+<p>Hier wird getestet, ob die Klasse mit negativen Zahlen rechnen w&uuml;rde, da mit diesen kein korrektes Ergebnis geliefert werden k&ouml;nnte.</p>
 <pre><code class="language-c#">        [TestMethod]
         public void CheckInputValueCheck()
         {
@@ -720,7 +720,7 @@ Dabei werden die Ergebnisse der Methoden mit einem erwarteten Wert verglichen un
             Assert.IsFalse(Calculator.CheckInputValue(1, 1, 1, 1, -1));
         }
 </code></pre>
-<p>Als n&auml;chstes wird geschaut, was passiert wenn man 0 als Wert angibt und ob die Klasse diesen Wert auch nicht annimmt.</p>
+<p>Als n&auml;chstes wird geschaut was passiert, wenn man 0 als Wert angibt und ob die Klasse mit diesem Wert auch nicht weiter rechnet.</p>
 <pre><code class="language-c#">        [TestMethod]
         public void CheckInputUnitCheck()
         {
@@ -736,7 +736,7 @@ Dabei werden die Ergebnisse der Methoden mit einem erwarteten Wert verglichen un
             Assert.IsFalse(Calculator.CheckInputUnit(1,1,1,1,1,0));
         }
 </code></pre>
-<p>In dem n&auml;chsten Test wird &uuml;berpr&uuml;ft ob der Unit Tree so funktioniert wie er soll und keine L&uuml;cken aufweist. 
+<p>In dem n&auml;chsten Test wird &uuml;berpr&uuml;ft, ob der Unit Tree so funktioniert, wie er soll und keine L&uuml;cken aufweist. 
 Es wird getestet, was passiert, wenn der Unit Tree keinen Rundlauf hat, wenn es eine schwebene Verbindung gibt und wenn er theoretisch funktionieren sollte. 
 Sind die ersten beiden Test falsch und der letzte richtig, dann funktioniert der Unit Tree wie gedacht.</p>
 <pre><code class="language-c#">        [TestMethod]
@@ -764,7 +764,7 @@ Sind die ersten beiden Test falsch und der letzte richtig, dann funktioniert der
             Assert.IsTrue(unitTree3.IsFunctional());
         }
 </code></pre>
-<p>In diesem Test werden die Pr&auml;fixe &uuml;berpr&uuml;ft, um zu wissen ob ihre Werte stimmen.</p>
+<p>In diesem Test werden die Pr&auml;fixe &uuml;berpr&uuml;ft, um zu wissen, ob ihre Werte stimmen.</p>
 <pre><code class="language-c#">        [TestMethod]
         public void CheckPrefixValue()
         {
