@@ -133,7 +133,7 @@ Zudem besitzt das Enum einen Default, da die Pr&auml;fixe nicht immer ben&ouml;t
             Mikro = -6,
             Nani = -9,
             Piko = -12,
-            Femot = -15,
+            Femto = -15,
             Atto = -18,
             Zepto = -21,
             Yokto = -24,
@@ -386,7 +386,7 @@ Zum einem die <strong>ben&ouml;tigte Fl&auml;che</strong>, der inneren Schicht, 
         {
             double I = ampere;
             double TRise = tRise;
-            double constantK = 0.024;
+            const double constantK = 0.024;
             double constantB = 0.44;
             double constantC = 0.725;
             double area;
@@ -398,7 +398,7 @@ Zum einem die <strong>ben&ouml;tigte Fl&auml;che</strong>, der inneren Schicht, 
 </code></pre>
 <pre><code class="language-c#">        public double CalculateAreaExtern(double ampere, double tRise)
         {
-            double I = ampere;
+             double I = ampere;
             double TRise = tRise;
             double constantK = 0.048;
             double constantB = 0.44;
@@ -424,19 +424,420 @@ Zum einem die <strong>ben&ouml;tigte Fl&auml;che</strong>, der inneren Schicht, 
 </code></pre>
 <pre><code class="language-c#">        public double CalculateWidthOzFt(double area, double thickness)
         {
-            double A = area;
-            double t = thickness;
-            double width;
+            return CalculateWidthMil(area, thickness * 1.378f);
 
-            width = A / (t * 1.378);
+        }
+</code></pre>
+<p>Hier wird dann direkt &uuml;berpr&uuml;ft, ob der eingegebene Wert, verwendet werden kann oder ob dieser nicht erlaubt ist.</p>
+<pre><code class="language-c#">        public bool CheckInputValue(double ampereValue, double temperatureValue, double ThicknessValue, double traceLengthValue, double temperaturRiseValue)
+        {
+            double[] InputValue = { ampereValue, temperatureValue, ThicknessValue, traceLengthValue, temperaturRiseValue };
 
-            return width;
+            if(InputValue.Any(x =&gt; x &lt;= 0))
+            {
+                return false;
+            }
+            return true;
+        }
+</code></pre>
+<p>Als n&auml;chstes wird auch &uuml;berpr&uuml;ft, ob die eingegebene Unit zul&auml;ssig ist. 
+Falls dies nicht der Fall sein sollte, dann gibt das bool false aus.</p>
+<pre><code class="language-c#">        public bool CheckInputUnit(double targetUnitTemperature, double targetUnitThickness, double targetUnitTraceLength, double targetUnitTemperaturRise, double targetUnitWidthIntern, double targetUnitWidthExtern)
+        {
+            int tempResult = 0;
+            int tempRiseResult = 0;
+            int thickResult = 0;
+            int traceLenghtResult = 0;
+            int widthInternResult = 0;
+            int widthExternResult = 0;
+
+            if (targetUnitTemperature &gt; 0 &amp;&amp; targetUnitThickness &lt; 2 &amp;&amp; targetUnitTemperaturRise &gt; 0 &amp;&amp; targetUnitTemperaturRise &lt; 2)
+            {
+                tempResult = 1;
+                tempRiseResult = 1;
+            }
+            if (targetUnitThickness &gt; 0 &amp;&amp; targetUnitThickness &lt; 4)
+            {
+                thickResult = 1;
+            }
+            if(targetUnitTraceLength &gt; 0 &amp;&amp; targetUnitTraceLength &lt; 7)
+            {
+                traceLenghtResult = 1;
+            }
+            if(targetUnitWidthIntern &gt; 0 &amp;&amp; targetUnitWidthIntern &lt; 3 &amp;&amp; targetUnitWidthExtern &gt; 0 &amp;&amp; targetUnitWidthExtern &lt; 3)
+            {
+                widthInternResult = 1;
+                widthExternResult = 1;
+            }
+
+            double[] UnitCheck = { tempResult, tempRiseResult, thickResult, traceLenghtResult, widthInternResult, widthExternResult };
+
+            if (UnitCheck.Any(x =&gt; x &lt; 1))
+            {
+                return false;
+            }
+            return true;
         }
 </code></pre>
 <h2 id="testing">Testing</h2>
 <p>Um sicher zu stellen, dass alles funktioniert, haben wir mit Unit Tests verschiedene Methoden und Klassen getestet. 
-Zum einen wurde der Calculator getestet, die Pr&auml;fixe wurden getestet und es wurden Tests mit ultimativen Zahlen gemacht. 
-Zudem wurde, dass der Unit Tree funktioniert, bereits in der Klasse selbst &uuml;berpr&uuml;ft.</p></div>
+Zum einen wurde der Calculator getestet, die Pr&auml;fixe wurden getestet und es wurden Tests mit verschiedenen Zahlen gemacht. 
+Zudem wird zus&auml;tzlich &uuml;berpr&uuml;ft, ob der Unit Tree funktioniert, da dieser eins der wichtigsten Elemente der Klasse ist.  </p>
+<p><strong>Calculator Test</strong><br />
+Um den Unit Tree zu Testen gibt es viele Funktionen, um sicher zu stellen, dass keine Fehler auftauchen k&ouml;nnen.<br />
+Zuerst wird &uuml;berpr&uuml;ft, ob die Konvertierung der Einheiten funktioniert. 
+Dabei werden alle Einheiten benutzt, um eine M&ouml;glichkeiten zu beinhalten.</p>
+<pre><code class="language-c#">        [TestMethod]
+        public void CheckSelfConversion()
+        {
+            UnitTree Converter = new UnitTree();
+
+            Converter.AddPath(&quot;cm&quot;, &quot;mym&quot;, x =&gt; x * 10000);
+            Converter.AddPath(&quot;cm&quot;, &quot;mm&quot;, x =&gt; x * 10.0);
+            Converter.AddPath(&quot;cm&quot;, &quot;m&quot;, x =&gt; x / 100.0);
+            Converter.AddPath(&quot;cm&quot;, &quot;in&quot;, x =&gt; x / 2.54);
+            Converter.AddPath(&quot;cm&quot;, &quot;ft&quot;, x =&gt; x / 30.48);
+            Converter.AddPath(&quot;mym&quot;, &quot;cm&quot;, x =&gt; x / 10000);
+            Converter.AddPath(&quot;m&quot;, &quot;cm&quot;, x =&gt; x * 100.0);
+            Converter.AddPath(&quot;mm&quot;, &quot;cm&quot;, x =&gt; x / 10.0);
+            Converter.AddPath(&quot;in&quot;, &quot;cm&quot;, x =&gt; x * 2.54);
+            Converter.AddPath(&quot;ft&quot;, &quot;cm&quot;, x =&gt; x * 30.48);
+            Converter.AddPath(&quot;mil&quot;, &quot;in&quot;, x =&gt; x / 1000);
+            Converter.AddPath(&quot;in&quot;, &quot;mil&quot;, x =&gt; x * 1000);
+            Converter.AddPath(&quot;oz/ft^2&quot;, &quot;mil&quot;, x =&gt; x / 1.37f);
+            Converter.AddPath(&quot;mil&quot;, &quot;oz/ft^2&quot;, x =&gt; x * 1.37f);
+            Converter.AddPath(&quot;mm&quot;, &quot;mil&quot;, x =&gt; x * 39.37f);
+            Converter.AddPath(&quot;mil&quot;, &quot;mm&quot;, x =&gt; x / 39.37f);
+            Converter.AddPath(&quot;mm&quot;, &quot;mym&quot;, x =&gt; x * 1000f);
+            Converter.AddPath(&quot;mym&quot;, &quot;mm&quot;, x =&gt; x / 1000f);
+            Converter.AddPath(&quot;F&quot;, &quot;C&quot;, x =&gt; (x - 32) * 5 / 9.0);
+            Converter.AddPath(&quot;C&quot;, &quot;F&quot;, x =&gt; (x * 1.8 + 32));
+
+            string[] StartUnits = new string[] { &quot;mym&quot;, &quot;mm&quot;, &quot;cm&quot;, &quot;m&quot;, &quot;in&quot;, &quot;ft&quot;, &quot;mil&quot;,&quot;oz/ft^2&quot;,&quot;F&quot;,&quot;C&quot; };
+            string[] EndUnits = new string[] { &quot;mym&quot;, &quot;mm&quot;, &quot;cm&quot;, &quot;m&quot;, &quot;in&quot;, &quot;ft&quot;, &quot;mil&quot;,&quot;oz/ft^2&quot;,&quot;F&quot;, &quot;C&quot; };
+
+            for (int i = 0; i &lt; StartUnits.Length; i++)
+            {
+                double number = Converter.ConvertValue(StartUnits[i], EndUnits[i], 1);
+                Assert.AreEqual(1, number);
+            }
+        }
+</code></pre>
+<p>Hier werden dann die Werte der Konvertierungen &uuml;berpr&uuml;ft. 
+Wenn ein Ergebnis nicht dem vorgesehenen Wert entspricht, dann schl&auml;gt der Test fehl.</p>
+<pre><code class="language-c#">        [TestMethod]
+        public void CheckLengthConversion()
+        {
+            UnitTree Converter = new UnitTree();
+
+            Converter.AddPath(&quot;cm&quot;, &quot;mym&quot;, x =&gt; x * 10000);
+            Converter.AddPath(&quot;cm&quot;, &quot;mm&quot;, x =&gt; x * 10.0);
+            Converter.AddPath(&quot;cm&quot;, &quot;m&quot;, x =&gt; x / 100.0);
+            Converter.AddPath(&quot;cm&quot;, &quot;in&quot;, x =&gt; x / 2.54);
+            Converter.AddPath(&quot;cm&quot;, &quot;ft&quot;, x =&gt; x / 30.48);
+            Converter.AddPath(&quot;mym&quot;, &quot;cm&quot;, x =&gt; x / 10000);
+            Converter.AddPath(&quot;m&quot;, &quot;cm&quot;, x =&gt; x * 100.0);
+            Converter.AddPath(&quot;mm&quot;, &quot;cm&quot;, x =&gt; x / 10.0);
+            Converter.AddPath(&quot;in&quot;, &quot;cm&quot;, x =&gt; x * 2.54);
+            Converter.AddPath(&quot;ft&quot;, &quot;cm&quot;, x =&gt; x * 30.48);
+            Converter.AddPath(&quot;mil&quot;, &quot;in&quot;, x =&gt; x / 1000);
+            Converter.AddPath(&quot;in&quot;, &quot;mil&quot;, x =&gt; x * 1000);
+
+
+            double conversion1 = Converter.ConvertValue(&quot;mm&quot;, &quot;mym&quot;, 1);
+            Assert.AreEqual(1000, conversion1);
+            double conversion2 = Converter.ConvertValue(&quot;mm&quot;, &quot;cm&quot;, 1);
+            Assert.AreEqual(0.1, conversion2);
+            double conversion3 = Converter.ConvertValue(&quot;mm&quot;, &quot;m&quot;, 1);
+            Assert.AreEqual(0.001, conversion3);
+            double conversion4 = Converter.ConvertValue(&quot;mm&quot;, &quot;in&quot;, 1);
+            Assert.AreEqual(0.03937007874015748, conversion4);
+            double conversion5 = Converter.ConvertValue(&quot;mm&quot;, &quot;ft&quot;, 1);
+            Assert.AreEqual(0.0032808398950131233, conversion5);
+            double conversion6 = Converter.ConvertValue(&quot;mm&quot;, &quot;mil&quot;, 1);
+            Assert.AreEqual(39.37007874015748, conversion6);
+
+            double conversion7 = Converter.ConvertValue(&quot;cm&quot;, &quot;mm&quot;, 1);
+            Assert.AreEqual(10, conversion7);
+            double conversion8 = Converter.ConvertValue(&quot;cm&quot;, &quot;mym&quot;, 1);
+            Assert.AreEqual(10000, conversion8);
+            double conversion9 = Converter.ConvertValue(&quot;cm&quot;, &quot;m&quot;, 1);
+            Assert.AreEqual(0.01, conversion9);
+            double conversion10 = Converter.ConvertValue(&quot;cm&quot;, &quot;in&quot;, 1);
+            Assert.AreEqual(0.39370078740157477, conversion10);
+            double conversion11 = Converter.ConvertValue(&quot;cm&quot;, &quot;ft&quot;, 1);
+            Assert.AreEqual(0.03280839895013123, conversion11);
+            double conversion12 = Converter.ConvertValue(&quot;cm&quot;, &quot;mil&quot;, 1);
+            Assert.AreEqual(393.70078740157476, conversion12);
+
+            double conversion13 = Converter.ConvertValue(&quot;m&quot;, &quot;mm&quot;, 1);
+            Assert.AreEqual(1000, conversion13);
+            double conversion14 = Converter.ConvertValue(&quot;m&quot;, &quot;cm&quot;, 1);
+            Assert.AreEqual(100, conversion14);
+            double conversion15 = Converter.ConvertValue(&quot;m&quot;, &quot;mym&quot;, 1);
+            Assert.AreEqual(1e+6, conversion15);
+            double conversion16 = Converter.ConvertValue(&quot;m&quot;, &quot;in&quot;, 1);
+            Assert.AreEqual(39.37007874015748, conversion16);
+            double conversion17 = Converter.ConvertValue(&quot;m&quot;, &quot;ft&quot;, 1);
+            Assert.AreEqual(3.2808398950131235, conversion17);
+            double conversion18 = Converter.ConvertValue(&quot;m&quot;, &quot;mil&quot;, 1);
+            Assert.AreEqual(39370.07874015748, conversion18);
+
+            double conversion19 = Converter.ConvertValue(&quot;in&quot;, &quot;mm&quot;, 1);
+            Assert.AreEqual(25.4, conversion19);
+            double conversion20 = Converter.ConvertValue(&quot;in&quot;, &quot;cm&quot;, 1);
+            Assert.AreEqual(2.54, conversion20);
+            double conversion21 = Converter.ConvertValue(&quot;in&quot;, &quot;m&quot;, 1);
+            Assert.AreEqual(0.0254, conversion21);
+            double conversion22 = Converter.ConvertValue(&quot;in&quot;, &quot;mym&quot;, 1);
+            Assert.AreEqual(25400, conversion22);
+            double conversion23 = Converter.ConvertValue(&quot;in&quot;, &quot;ft&quot;, 1);
+            Assert.AreEqual(0.08333333333333333, conversion23);
+            double conversion24 = Converter.ConvertValue(&quot;in&quot;, &quot;mil&quot;, 1);
+            Assert.AreEqual(1000, conversion24);
+
+            double conversion25 = Converter.ConvertValue(&quot;ft&quot;, &quot;mm&quot;, 1);
+            Assert.AreEqual(304.8, conversion25);
+            double conversion26 = Converter.ConvertValue(&quot;ft&quot;, &quot;cm&quot;, 1);
+            Assert.AreEqual(30.48, conversion26);
+            double conversion27 = Converter.ConvertValue(&quot;ft&quot;, &quot;m&quot;, 1);
+            Assert.AreEqual(0.3048, conversion27);
+            double conversion28 = Converter.ConvertValue(&quot;ft&quot;, &quot;in&quot;, 1);
+            Assert.AreEqual(12, conversion28);
+            double conversion29 = Converter.ConvertValue(&quot;ft&quot;, &quot;mym&quot;, 1);
+            Assert.AreEqual(304800, conversion29);
+            double conversion30 = Converter.ConvertValue(&quot;ft&quot;, &quot;mil&quot;, 1);
+            Assert.AreEqual(12000, conversion30);
+
+            double conversion31 = Converter.ConvertValue(&quot;mil&quot;, &quot;mm&quot;, 1);
+            Assert.AreEqual(0.025400000000000002, conversion31);
+            double conversion32 = Converter.ConvertValue(&quot;mil&quot;, &quot;cm&quot;, 1);
+            Assert.AreEqual(0.00254, conversion32);
+            double conversion33 = Converter.ConvertValue(&quot;mil&quot;, &quot;m&quot;, 1);
+            Assert.AreEqual(2.54e-5, conversion33);
+            double conversion34 = Converter.ConvertValue(&quot;mil&quot;, &quot;in&quot;, 1);
+            Assert.AreEqual(0.001, conversion34);
+            double conversion35 = Converter.ConvertValue(&quot;mil&quot;, &quot;ft&quot;, 1);
+            Assert.AreEqual(8.333333333333333E-05, conversion35);
+            double conversion36 = Converter.ConvertValue(&quot;mil&quot;, &quot;mym&quot;, 1);
+            Assert.AreEqual(25.400000000000002, conversion36);
+        }
+</code></pre>
+<p>Im Folgenden werden die einzelnen Konvertierungen dann nochmal genauer &uuml;berpr&uuml;ft, angefangen bei der Temperatur.</p>
+<pre><code class="language-c#">        [TestMethod]
+        public void CheckTemperatureConversion()
+        {
+            UnitTree Converter = new UnitTree();
+            Converter.AddPath(&quot;F&quot;, &quot;C&quot;, x =&gt; (x - 32) * 5 / 9.0);
+            Converter.AddPath(&quot;C&quot;, &quot;F&quot;, x =&gt; (x * 1.8 + 32));
+
+            double conversion1 = Converter.ConvertValue(&quot;F&quot;, &quot;C&quot;, 25);
+            Assert.AreEqual(-3.888888888888889, conversion1);
+            double conversion2 = Converter.ConvertValue(&quot;C&quot;, &quot;F&quot;, 25);
+            Assert.AreEqual(77, conversion2);
+        }
+</code></pre>
+<p>Danach kommt die Konvertierung der Dicke.</p>
+<pre><code class="language-c#">
+        [TestMethod]
+        public void CheckThicknessConversion()
+        {
+            UnitTree Converter = new UnitTree();
+
+            Converter.AddPath(&quot;oz/ft^2&quot;, &quot;mil&quot;, x =&gt; x / 1.37f);
+            Converter.AddPath(&quot;mil&quot;, &quot;oz/ft^2&quot;, x =&gt; x * 1.37f);
+            Converter.AddPath(&quot;mm&quot;, &quot;mil&quot;, x =&gt; x * 39.37f);
+            Converter.AddPath(&quot;mil&quot;, &quot;mm&quot;, x =&gt; x / 39.37f);
+            Converter.AddPath(&quot;mm&quot;, &quot;mym&quot;, x =&gt; x * 1000f);
+            Converter.AddPath(&quot;mym&quot;, &quot;mm&quot;, x =&gt; x / 1000f);
+
+            double conversion1 = Converter.ConvertValue(&quot;oz/ft^2&quot;, &quot;mil&quot;, 1);
+            Assert.AreEqual(0.729927004758713, conversion1);
+            double conversion2 = Converter.ConvertValue(&quot;oz/ft^2&quot;, &quot;mm&quot;, 1);
+            Assert.AreEqual(0.01854018350423585, conversion2);
+            double conversion3 = Converter.ConvertValue(&quot;oz/ft^2&quot;, &quot;mym&quot;, 1);
+            Assert.AreEqual(18.54018350423585, conversion3);
+
+            double conversion4 = Converter.ConvertValue(&quot;mil&quot;, &quot;oz/ft^2&quot;, 1);
+            Assert.AreEqual(1.3700000047683716, conversion4);
+            double conversion5 = Converter.ConvertValue(&quot;mil&quot;, &quot;mm&quot;, 1);
+            Assert.AreEqual(0.0254000514892096, conversion5);
+            double conversion6 = Converter.ConvertValue(&quot;mil&quot;, &quot;mym&quot;, 1);
+            Assert.AreEqual(25.4000514892096, conversion6);
+
+            double conversion7 = Converter.ConvertValue(&quot;mm&quot;, &quot;oz/ft^2&quot;, 1);
+            Assert.AreEqual(53.93689872441291, conversion7);
+            double conversion8 = Converter.ConvertValue(&quot;mm&quot;, &quot;mym&quot;, 1);
+            Assert.AreEqual(1000, conversion8);
+            double conversion9 = Converter.ConvertValue(&quot;mm&quot;, &quot;mil&quot;, 1);
+            Assert.AreEqual(39.369998931884766, conversion9);
+
+            double conversion10 = Converter.ConvertValue(&quot;mym&quot;, &quot;mil&quot;, 1);
+            Assert.AreEqual(0.03936999893188477, conversion10);
+            double conversion11 = Converter.ConvertValue(&quot;mym&quot;, &quot;mm&quot;, 1);
+            Assert.AreEqual(0.001, conversion11);
+            double conversion12 = Converter.ConvertValue(&quot;mym&quot;, &quot;oz/ft^2&quot;, 1);
+            Assert.AreEqual(0.053936898724412916, conversion12);
+        }
+</code></pre>
+<p>Als n&auml;chstes wird die Calculator Klasse getestet. 
+Dabei werden die Ergebnisse der Methoden mit einem erwarteten Wert verglichen und so &uuml;berpr&uuml;ft ob bei den Rechungen, das richtige rauskommt.</p>
+<pre><code class="language-c#">        [TestMethod]
+        public void CheckLayerCalculation()
+        {
+            Calculator Calculator = new Calculator();
+
+            double areaIntern = Calculator.CalculateAreaIntern(1, 10);
+            double areaExtern = Calculator.CalculateAreaExtern(1, 10);
+
+            Assert.AreEqual(42.39306714892737, areaIntern);
+            Assert.AreEqual(16.296001347209486, areaExtern);
+
+            double widthInternMil = Calculator.CalculateWidthMil(areaIntern, 1);
+            double widthInternOzFt = Calculator.CalculateWidthOzFt(areaIntern, 1);
+
+            Assert.AreEqual(42.39306714892737, widthInternMil);
+            Assert.AreEqual(30.764199204258915, widthInternOzFt);
+
+            double widthExternMil = Calculator.CalculateWidthMil(areaExtern, 1);
+            double widthExternOzFt = Calculator.CalculateWidthOzFt(areaExtern, 1);
+
+            Assert.AreEqual(16.296001347209486, widthExternMil);
+            Assert.AreEqual(11.825835340416246, widthExternOzFt);
+        }
+</code></pre>
+<p>Hier wird getestet, ob Klasse negative Zahlen nicht annimmt, da mit diesen kein korrektes Ergebnis geliefert werden k&ouml;nnte.</p>
+<pre><code class="language-c#">        [TestMethod]
+        public void CheckInputValueCheck()
+        {
+            Calculator Calculator = new Calculator();
+
+            Assert.IsTrue(Calculator.CheckInputValue(1, 1, 1, 1, 1));
+            Assert.IsFalse(Calculator.CheckInputValue(-1, 1, 1, 1, 1));
+            Assert.IsFalse(Calculator.CheckInputValue(1, -1, 1, 1, 1));
+            Assert.IsFalse(Calculator.CheckInputValue(1, 1, -1, 1, 1));
+            Assert.IsFalse(Calculator.CheckInputValue(1, 1, 1, -1, 1));
+            Assert.IsFalse(Calculator.CheckInputValue(1, 1, 1, 1, -1));
+        }
+</code></pre>
+<p>Als n&auml;chstes wird geschaut, was passiert wenn man 0 als Wert angibt und ob die Klasse diesen Wert auch nicht annimmt.</p>
+<pre><code class="language-c#">        [TestMethod]
+        public void CheckInputUnitCheck()
+        {
+           // Exception WrongInput;
+
+            Calculator Calculator = new Calculator();
+            Assert.IsTrue(Calculator.CheckInputUnit(1,1,1,1,1,1));
+            Assert.IsFalse(Calculator.CheckInputUnit(0,1,1,1,1,1));
+            Assert.IsFalse(Calculator.CheckInputUnit(1,0,1,1,1,1));
+            Assert.IsFalse(Calculator.CheckInputUnit(1,1,0,1,1,1));
+            Assert.IsFalse(Calculator.CheckInputUnit(1,1,1,0,1,1));
+            Assert.IsFalse(Calculator.CheckInputUnit(1,1,1,1,0,1));
+            Assert.IsFalse(Calculator.CheckInputUnit(1,1,1,1,1,0));
+        }
+</code></pre>
+<p>In dem n&auml;chsten Test wird &uuml;berpr&uuml;ft ob der Unit Tree so funktioniert wie er soll und keine L&uuml;cken aufweist. 
+Es wird getestet, was passiert, wenn der Unit Tree keinen Rundlauf hat, wenn es eine schwebene Verbindung gibt und wenn er theoretisch funktionieren sollte. 
+Sind die ersten beiden Test falsch und der letzte richtig, dann funktioniert der Unit Tree wie gedacht.</p>
+<pre><code class="language-c#">        [TestMethod]
+        public void CheckFunctionality()
+        {
+            //kein Rundlauf
+            UnitTree unitTree = new UnitTree();
+            unitTree.AddPath(&quot;m&quot;, &quot;cm&quot;, x =&gt; x * 100.0); 
+            Assert.IsFalse(unitTree.IsFunctional());
+
+            //schwebende Verbindung
+            UnitTree unitTree2 = new UnitTree();
+            unitTree2.AddPath(&quot;m&quot;, &quot;cm&quot;, x =&gt; x * 100.0);
+            unitTree2.AddPath(&quot;cm&quot;, &quot;m&quot;, x =&gt; x / 100);
+            unitTree2.AddPath(&quot;mm&quot;, &quot;dm&quot;, x =&gt; x / 100);
+            Assert.IsFalse(unitTree2.IsFunctional());
+
+            //funktionierender Tree
+            UnitTree unitTree3 = new UnitTree();
+            unitTree3.AddPath(&quot;m&quot;, &quot;cm&quot;, x =&gt; x * 100.0);
+            unitTree3.AddPath(&quot;cm&quot;, &quot;m&quot;, x =&gt; x / 100);
+            unitTree3.AddPath(&quot;cm&quot;, &quot;mm&quot;, x =&gt; x / 10);
+            unitTree3.AddPath(&quot;mm&quot;, &quot;dm&quot;, x =&gt; x / 100);
+            unitTree3.AddPath(&quot;dm&quot;, &quot;m&quot;, x =&gt; x / 10);
+            Assert.IsTrue(unitTree3.IsFunctional());
+        }
+</code></pre>
+<p>In diesem Test werden die Pr&auml;fixe &uuml;berpr&uuml;ft, um zu wissen ob ihre Werte stimmen.</p>
+<pre><code class="language-c#">        [TestMethod]
+        public void CheckPrefixValue()
+        {
+            SIPrefix[] s = new SIPrefix[] {SIPrefix.Quekto, SIPrefix.Ronto, SIPrefix.Yokto, SIPrefix.Zepto, SIPrefix.Atto
+                                            , SIPrefix.Femto, SIPrefix.Piko, SIPrefix.Nani, SIPrefix.Mikro, SIPrefix.Milli, SIPrefix.SIDefault,
+                                            SIPrefix.Kilo, SIPrefix.Mega, SIPrefix.Giga, SIPrefix.Tera, SIPrefix.Peta, SIPrefix.Exa, SIPrefix.Zetta
+                                            , SIPrefix.Yotta, SIPrefix.Ronna, SIPrefix.Quetta};
+
+            int j = -30;
+
+            foreach(SIPrefix i in s)
+            {
+                Assert.AreEqual(j,((int)i));
+                j += 3;
+            }
+
+            SIPrefix[] k = new SIPrefix[] { SIPrefix.Hekto, SIPrefix.Deka, SIPrefix.SIDefault, SIPrefix.Dezi, SIPrefix.Zenti };
+
+            int l = 2;
+
+            foreach(SIPrefix m in k)
+            {
+                Assert.AreEqual(l, (int)m);
+                l -= 1;
+            }
+        }
+</code></pre>
+<p>Es wird auch getestet, ob die Konvertierung der Pr&auml;fixe fehlerfrei funktioniert, damit sich keine Fehler unbemerkt durch das Programm ziehen.</p>
+<pre><code class="language-c#">        [TestMethod]
+        public void CheckConvertSIPrefix()
+        {
+            UnitTree unitTree = new UnitTree();
+            SIPrefix[] positiv = new SIPrefix[] {SIPrefix.Kilo, SIPrefix.Mega, 
+                                                    SIPrefix.Giga, SIPrefix.Tera, SIPrefix.Peta, SIPrefix.Exa, SIPrefix.Zetta
+                                                , SIPrefix.Yotta, SIPrefix.Ronna, SIPrefix.Quetta};
+
+            SIPrefix[] negative = new SIPrefix[] { SIPrefix.Milli, SIPrefix.Mikro, SIPrefix.Nani, SIPrefix.Piko, SIPrefix.Femto,
+                                                     SIPrefix.Atto,  SIPrefix.Zepto, SIPrefix.Yokto, SIPrefix.Ronto, SIPrefix.Quekto, };
+
+            SIPrefix[] positiveClose = new SIPrefix[] { SIPrefix.SIDefault, SIPrefix.Deka, SIPrefix.Hekto };
+
+            SIPrefix[] negativeClose = new SIPrefix[] { SIPrefix.SIDefault, SIPrefix.Dezi, SIPrefix.Zenti };
+
+            double k = 1e+3;
+            double l = 1e-3;
+            double n = 1e+0;
+            double m = 1e-0;
+
+            foreach (SIPrefix i in positiv)
+            {
+                 Assert.AreEqual(k, unitTree.ConvertSIPrefixValue(&quot;m&quot;, SIPrefix.SIDefault, &quot;m&quot;, i, 1));
+                 k *= 1000;
+            }
+
+            foreach (SIPrefix i in negative)
+            {
+                Assert.AreEqual(l, unitTree.ConvertSIPrefixValue(&quot;m&quot;, SIPrefix.SIDefault, &quot;m&quot;, i, 1), l * 0.001);
+                l /= 1000;
+            }
+
+            foreach (SIPrefix i in positiveClose)
+            {
+                Assert.AreEqual(n, unitTree.ConvertSIPrefixValue(&quot;m&quot;, SIPrefix.SIDefault, &quot;m&quot;, i, 1));
+                n *= 10;
+            }
+
+            foreach (SIPrefix i in negativeClose)
+            {
+                Assert.AreEqual(m, unitTree.ConvertSIPrefixValue(&quot;m&quot;, SIPrefix.SIDefault, &quot;m&quot;, i, 1));
+                m /= 10;
+            }
+        }        
+</code></pre></div>
             </div>
         </div>
 

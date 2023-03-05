@@ -385,7 +385,136 @@ Der letzte x Wert bleibt dann der Wert von Value und ist somit der n&auml;chste 
 </code></pre>
 <h2 id="testing">Testing</h2>
 <p>Durch Tests haben wir &uuml;berpr&uuml;ft ob ColorToValue, ValueToColor und die Toleranz Methoden so funktioren, wie sie funktionieren sollten.<br />
-Dabei haben wir f&uuml;r jeden dieser Testkategorien eine eigene Klasse gemacht, damit es &uuml;bersichtlich bleibt.</p></div>
+Dabei haben wir f&uuml;r jeden dieser Testkategorien eine eigene Klasse gemacht, damit es &uuml;bersichtlich bleibt.  </p>
+<p><strong>ColorToValue Test</strong><br />
+Zuerst haben wir die Methoden getestet, mit denen man von Farbe zu Wert konvertieren kann. 
+Dabei wurde zum einen getestet, was passiert, wenn man eine ung&uuml;ltige Farbe eingeben w&uuml;rde. </p>
+<pre><code class="language-c#">        [TestMethod]
+        public void InvalidNummeric()
+        {
+            ResistorRing r = ResistorRing.Red;
+
+            Resistor RFour = new Resistor(r, r, r, r);
+            Resistor RFive = new Resistor(r, r, r, r, r);
+        }
+</code></pre>
+<p>Dann wurde auch direkt getestet, ob das konvertieren von Farbe zu Faktor vern&uuml;ftig funktioniert und auch keine Fehler auftauchen.</p>
+<pre><code class="language-c#">        [TestMethod]
+        public void ColorToFactor()
+        {
+            ResistorRing[] RingFactor = new ResistorRing[] {ResistorRing.Pink,ResistorRing.Silver,ResistorRing.Gold,ResistorRing.Black, ResistorRing.Brown,
+                                                             ResistorRing.Red,ResistorRing.Orange,ResistorRing.Yellow,
+                                                             ResistorRing.Green,ResistorRing.Blue,ResistorRing.Purple,ResistorRing.Gray,ResistorRing.White,
+                                                             };
+            double j = 0.001;
+
+            for (int i = 0; i &lt; RingFactor.Length; i++)
+            {
+                Assert.AreEqual(j, new Factor(RingFactor[i]).Value);
+                j *= 10;
+            }
+        }
+</code></pre>
+<p><strong>ValueToColor Test</strong><br />
+Es wurde auch getestet, ob das Konvertieren von Wert zu Farbe funktioniert. 
+Dabei wurde als erstes getestet, ob die Funktion den Wert richtig rundet.</p>
+<pre><code class="language-c#">        [TestMethod]
+        public void ValueTest()
+        {
+            long test = new Resistor(373500, Tolerance.One, RingCount.Four).Value;
+
+            Assert.AreEqual(370000, test);
+        }
+</code></pre>
+<p>Danach wurde getestet, ob die Konvertierung mit Vier Ringen so funktioniert, wie gedacht.</p>
+<pre><code class="language-c#">        [TestMethod]
+        public void FourRingTest()
+        {
+            ResistorRing One = new Resistor(373500, Tolerance.One, RingCount.Four).Ring1;
+            ResistorRing Two = new Resistor(373500, Tolerance.One, RingCount.Four).Ring2;
+            ResistorRing Three = new Factor(1).Color;
+            ResistorRing Four = new Tolerance(One).Color;
+            string fourRings = One.ToString() + &quot; &quot; + Two.ToString() + &quot; &quot; + Three.ToString() + &quot; &quot; + Four.ToString();
+
+            string result = &quot;Orange Purple Black Orange&quot;;
+
+            Assert.AreEqual(result, fourRings);
+        }
+</code></pre>
+<p>Nat&uuml;rlich wurde das gleiche auch mit F&uuml;nf Ringen getestet.</p>
+<pre><code class="language-c#">        [TestMethod]
+        public void FiveRingTest()
+        {
+            ResistorRing One = new Resistor(373500, Tolerance.One, RingCount.Five).Ring1;
+            ResistorRing Two = new Resistor(373500, Tolerance.One, RingCount.Five).Ring2;
+            ResistorRing Three = new Resistor(373500, Tolerance.One,RingCount.Five).Ring3;
+            ResistorRing Four = new Factor(1).Color;
+            ResistorRing Five = new Tolerance(One).Color;
+            string fiveRings = One.ToString() + &quot; &quot; + Two.ToString() + &quot; &quot; + Three.ToString() + &quot; &quot; + Four.ToString() + &quot; &quot; + Five.ToString();
+
+            string result = &quot;Orange Purple Orange Black Orange&quot;;
+
+            Assert.AreEqual(result, fiveRings);
+        }
+</code></pre>
+<p>Als n&auml;chstes wurde &uuml;berpr&uuml;ft, ob auch der Faktorring funktioniert und die richtige Farbe ausgibt.</p>
+<pre><code class="language-c#">        [TestMethod]
+        public void FactorRingTest()
+        {
+            int val = Rounding(120);
+            Assert.AreEqual(ResistorRing.Red, new Factor(val).Color);
+        }
+
+        public int Rounding(int value)
+        {
+            int digits = value.ToString().Length;
+            int newValue = 1;
+
+            while (digits &gt; 1)
+            {
+                newValue *= 10;
+                digits -= 1;
+            }
+            return newValue;
+        }
+    }
+</code></pre>
+<p><strong>Tolerance Test</strong><br />
+Zum Schluss wurde noch getestet, ob die Toleranz Klasse so funktioniert, wie gedacht. 
+Dabei wurden die verschiedenen Rundungs Modi mit verschiedenen Zahlen getestet, um Fehler m&ouml;glichst fr&uuml;hzeitig zu erkennen.</p>
+<pre><code class="language-c#">        [TestMethod]
+        public void TestMethod1()
+        {
+            (double input, double expectedValue, Tolerance.RoundMode roundMode)[] testList =
+            {
+                (0.00001, 0.01, Tolerance.RoundMode.ToLower),
+                (0, 0.01, Tolerance.RoundMode.ToLower),
+                (-1, 1, Tolerance.RoundMode.ToLower),
+                (-10_000_000_000, 10, Tolerance.RoundMode.ToLower),
+                (10_000_000_000, 10, Tolerance.RoundMode.ToLower),
+                (3.5,2,Tolerance.RoundMode.ToLower),
+
+                (0.00001, 0.01, Tolerance.RoundMode.ToUpper),
+                (0, 0.01, Tolerance.RoundMode.ToUpper),
+                (-1, 1, Tolerance.RoundMode.ToUpper),
+                (-10_000_000_000, 10, Tolerance.RoundMode.ToUpper),
+                (10_000_000_000, 10, Tolerance.RoundMode.ToUpper),
+                (3.5,5,Tolerance.RoundMode.ToUpper),
+
+                (0.00001, 0.01, Tolerance.RoundMode.Nearest),
+                (0, 0.01, Tolerance.RoundMode.Nearest),
+                (-1, 1, Tolerance.RoundMode.Nearest),
+                (-10_000_000_000, 10, Tolerance.RoundMode.Nearest),
+                (10_000_000_000, 10, Tolerance.RoundMode.Nearest),
+                (3.5,5,Tolerance.RoundMode.Nearest)
+            };
+
+            foreach((double input, double expectedValue, Tolerance.RoundMode roundMode) in testList)
+            {
+                Assert.AreEqual(expectedValue, new Tolerance(input, roundMode).Value);
+            }
+        }
+</code></pre></div>
             </div>
         </div>
 
