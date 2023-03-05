@@ -9,4 +9,4 @@ Im Folgenden werden die einzelnen Funktionen gezeigt und erkl&auml;rt, damit man
 
 **Widerstand**          : Hiermit kann man den Widerstandsfarbcode konvertieren. Sowohl von Wert zu Farbe, als auch von Farbe zu Wert.  
 **Leiterbahnbreiten**   : Hiermit kann man die ben&ouml;tigte Leiterbahnbreite ausrechnen. Zudem beinhaltet es auch Funktionen, 
-mit denen man verschiedene Einheiten umwandeln kann (zum Beispiel Celcius zu Fahrenheit).
+mit denen man verschiedene Einheiten umwandeln kann (zum Beispiel Celsius zu Fahrenheit).
